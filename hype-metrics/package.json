@@ -1,0 +1,12 @@
+{
+  "name": "hype-metrics",
+  "version": "0.1.0",
+  "description": "A set of API methods for collecting website metrics.",
+  "main": "src/index.js",
+  "keywords": [
+    "hype",
+    "metrics"
+  ],
+  "author": "Giacomo Guerci <giacomo.guerci14@ic.ac.uk>",
+  "license": "ISC"
+}
