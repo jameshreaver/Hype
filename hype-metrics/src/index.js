@@ -1,6 +1,8 @@
 'use strict';
 
+import EventMetric from "./metrics/EventMetric";
 
-exports.buttonClicked = function(buttonName) {
-  console.log("Button " + buttonName + " clicked.")
+
+export function logEvent(event) {
+  return new EventMetric(event);
 }
