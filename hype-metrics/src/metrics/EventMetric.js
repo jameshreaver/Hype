@@ -1,11 +1,3 @@
-/* Hype-Metrics
-
-  Event Metric class
-
-  This class alows to capture and log a user
-  event/interaction with the specified fields.
-*/
-
 import dispatch from "../dispatch";
 
 
