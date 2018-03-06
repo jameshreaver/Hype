@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/theme.css">
+    <title>Hype for BookSnap – (3) Experiments running</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#"><i class="fa fa-universal-access fa-spin fa-fw"></i> <strong>Hype</strong> for BookSnap</a>
+        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav mr-auto navbar-txt">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Settings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Help</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+          </ul>
+          <form class="form-inline mt-2 mt-md-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-light my-2 my-sm-0" type="submit">Go</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-sm-3 col-md-2 d-none d-sm-block bg-dark sidebar">
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <span class="nav-link disabled sidebar-txt">Planned Experiments</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Rate Reviews</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Employ Redux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Browse by Genre</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Sign-In Feature</a>
+            </li>
+          </ul>
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <span class="nav-link disabled sidebar-txt">Running Experiments</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link selected" href="#">Show Recent Reviews<span class="badge badge-light float-right">40%</span> </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Use NeDB<span class="badge badge-light float-right">66%</span> </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Browse by Year<span class="badge badge-light float-right">98%</span> </a>
+            </li>
+          </ul>
+          <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+              <span class="nav-link disabled sidebar-txt">Past Experiments</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-minus-circle sidebar-icon interrupt"></i>Show Book Covers</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-check-circle sidebar-icon success"></i>Snap a Review!</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-check-circle sidebar-icon success"></i>Star Ratings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa fa-times-circle sidebar-icon failure"></i>Use RethinkDB</a>
+            </li>
+          </ul>
+        </nav>
+        <main role="main" class="col-sm-9 ml-sm-auto col-md-10 pt-3">
+          <h1 class="pull-right">40% <span class="main-light">until 24<sup>thw</sup>Jan</span></h1>
+          <h1>"Show Recent Reviews"</h1>
+          <section class="row">
+            <div class="col-sm-5">
+              <div class="card">
+                <h5 class="card-header text-center">
+                  Experiment Info<a href="#" class="badge badge-secondary main-tag pull-right">Edit</a>
+                </h5>
+                <div class="card-block">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          Title
+                        </div>
+                        <div class="col-sm-9">
+                          Show Recent Reviews
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          Owner
+                        </div>
+                        <div class="col-sm-9">
+                          Frontend Developers
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          Target
+                        </div>
+                        <div class="col-sm-9">
+                          User Interface
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-6">
+                          <div class="row">
+                            <div class="col-sm-6 card-subtext">
+                              From
+                            </div>
+                            <div class="col-sm-6">
+                              10/01/2018
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="row">
+                            <div class="col-sm-3 card-subtext">
+                              to
+                            </div>
+                            <div class="col-sm-9">
+                              24/01/2018
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          Branch
+                        </div>
+                        <div class="col-sm-9 monospace">
+                          recent_reviews
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="card-footer">
+                  <div class="row">
+                    <div class="col-sm-3 card-subtext">
+                      Status
+                    </div>
+                    <div class="col-sm-9 card-status running">
+                      <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Running
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-7">
+              <div class="progress progress-main">
+                <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: 40%">40%</div>
+              </div>
+              <h4 class="main-header">Metrics Overview<a href="#" class="badge badge-secondary main-tag pull-right">Expand</a></h4>
+              <div class="card">
+                <div class="card-block">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          #1 Page Views
+                        </div>
+                        <div class="col-sm-9">
+                          <div class="progress progress-metric">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%">44,566/40,000</div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          #2 Click Rate
+                        </div>
+                        <div class="col-sm-9">
+                          <div class="progress progress-metric">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 70%">0.56/0.8</div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          #3 Unique Visits
+                        </div>
+                        <div class="col-sm-9">
+                          <div class="progress progress-metric">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 38%">3,810/10,000</div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          #4 Reviews Read
+                        </div>
+                        <div class="col-sm-9">
+                          <div class="progress progress-metric">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 74%">1478/2000</div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row">
+                        <div class="col-sm-3 card-subtext">
+                          #5 Reviews Added
+                        </div>
+                        <div class="col-sm-9">
+                          <div class="progress progress-metric">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 24%">48/200</div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+          <h2>Hypotheses</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                  <th>Header</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1,001</td>
+                  <td>Lorem</td>
+                  <td>ipsum</td>
+                  <td>dolor</td>
+                  <td>sit</td>
+                </tr>
+                <tr>
+                  <td>1,002</td>
+                  <td>amet</td>
+                  <td>consectetur</td>
+                  <td>adipiscing</td>
+                  <td>elit</td>
+                </tr>
+                <tr>
+                  <td>1,003</td>
+                  <td>Integer</td>
+                  <td>nec</td>
+                  <td>odio</td>
+                  <td>Praesent</td>
+                </tr>
+                <tr>
+                  <td>1,003</td>
+                  <td>libero</td>
+                  <td>Sed</td>
+                  <td>cursus</td>
+                  <td>ante</td>
+                </tr>
+                <tr>
+                  <td>1,004</td>
+                  <td>dapibus</td>
+                  <td>diam</td>
+                  <td>Sed</td>
+                  <td>nisi</td>
+                </tr>
+                <tr>
+                  <td>1,005</td>
+                  <td>Nulla</td>
+                  <td>quis</td>
+                  <td>sem</td>
+                  <td>at</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h2>Metrics</h2>
+          <section class="row text-center placeholders">
+            <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <div class="text-muted">Something else</div>
+            </div>
+            <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+            </div>
+            <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+            </div>
+            <div class="col-6 col-sm-3 placeholder">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+              <h4>Label</h4>
+              <span class="text-muted">Something else</span>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script src="%PUBLIC_URL%/assets/js/jquery.slim.min.js"></script>
+    <script src="%PUBLIC_URL%/assets/js/bootstrap.min.js"></script>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!--<div id="root"></div>-->
+  </body>
+</html>
