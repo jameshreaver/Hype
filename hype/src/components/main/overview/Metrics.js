@@ -6,7 +6,7 @@ class Metrics extends Component {
     return (
       <div className="col-sm-7">
         <div className="progress progress-main">
-          <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:"40%"}}>40%</div>
+          <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:"85%"}}>85%</div>
         </div>
         <h4 className="main-header">Metrics Overview<a href="" className="badge badge-secondary main-tag pull-right">Expand</a></h4>
         <div className="card">
