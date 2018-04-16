@@ -78,9 +78,9 @@ class Metrics extends Component {
           datasetB.push(null);
         }
       }
-      console.log(labels);
-      console.log(datasetA);
-      console.log(datasetB);
+      //console.log(labels);
+      //console.log(datasetA);
+      //console.log(datasetB);
 
       this.setState({ "data":{
         labels: labels,

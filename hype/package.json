@@ -12,7 +12,8 @@
     "react": "^16.2.0",
     "react-chartjs": "^1.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
+    "react-scripts": "1.0.17",
+    "uuid": "^3.2.1"
   },
   "scripts": {
     "start": "PORT=5000 react-scripts start",
@@ -22,6 +23,10 @@
     "hype": "concurrently --kill-others-on-fail \"cd server && node server.js\" \"cd metrics && node metrics.js\" \"npm start\""
   },
   "proxy": {
+    "/api": {
+      "target": "http://localhost:5100/",
+      "changeOrigin": true
+    },
     "/config": {
       "target": "http://localhost:5100/",
       "changeOrigin": true

@@ -58,6 +58,10 @@ h1 {
   font-size: small;
 }
 
+.sidebar-link {
+  cursor: pointer;
+}
+
 .sidebar-tag {
   text-transform: uppercase;
   margin-right: 2px;
@@ -85,6 +89,20 @@ h1 {
   color: #ff9400;
 }
 
+.sidebar-btn {
+  width: 180px;
+}
+
+.save-btn {
+  width: 120px;
+  margin-right:20px;
+}
+
+.run-btn {
+  width: 180px;
+  margin-right:20px;
+}
+
 /*
  * Navbar
  */
@@ -100,7 +118,8 @@ h1 {
 }
 
 a.nav-link {
-  color: #DDDDDD;
+  cursor: pointer;
+  color: #DDDDDD!important;
 }
 
 a.nav-link.selected,
@@ -168,10 +187,107 @@ main {
   font-size: small;
 }
 
+.card-subtext.spaced {
+  margin-bottom: 6px;
+}
+
 .card-status {
   font-weight: bold;
 }
 
+.card-status.planned {
+  color: #17a2b8;
+}
+
 .card-status.running {
   color: #1477D5;
+}
+
+.create-checkbox {
+  margin-top: 15px;
+}
+
+.header-spaced {
+  margin-bottom: 20px;
+}
+
+/*
+ * Routing
+ */
+
+.routing-icon {
+  margin-top: -60px;
+  text-align: center;
+}
+
+.routing-icon .fa {
+  color: #BBBBBB;
+}
+
+.routing-percentages {
+  font-weight: bold;
+  margin-top: 6px;
+  display:inline-block;
+}
+
+.routing-spaced {
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
+.routing-arrow-left {
+  margin-right:-9px;
+}
+
+.routing-arrow-right {
+  margin-left:-9px;
+}
+
+.routing-text-left {
+  margin-top: -10px;
+}
+
+.routing-text-right {
+  margin-top: -10px;
+  color:red;
+}
+
+.routing-rules {
+  margin-left:-26px;
+  list-style-type: none;
+}
+
+.version-left {
+  padding-left: 30px;
+}
+
+.version-right {
+  padding-right: 30px;
+}
+
+
+/*
+ * Outcome
+ */
+
+.outcome-icon {
+  margin-left: 12px;
+  margin-right: 20px;
+}
+
+.outcome-icon.success {
+  color: #28a745;
+}
+
+.outcome-icon.failure {
+  color: #fc4444;
+}
+
+.outcome-icon.interrupt {
+  color: #ff9400;
+}
+
+
+.progress-bar.no-transition {
+  transition: none;
 }

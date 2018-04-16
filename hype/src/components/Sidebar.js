@@ -1,90 +1,128 @@
 import React, { Component } from 'react';
+import { computePercentage } from '../util/utils';
+import { getExperiments } from '../api/contentAPI';
 
 class Sidebar extends Component {
 
-  data = {
-    "planned-experiments": [
-      {"title":"Rate Reviews","complete":0,"status":"Planned"},
-      {"title":"Employ Redux","complete":0,"status":"Planned"},
-      {"title":"Browse by Genre","complete":0,"status":"Planned"},
-      {"title":"Sign-In Feature","complete":0,"status":"Planned"}
-    ],
-    "running-experiments": [
-      {"title":"Browse Button","complete":40,"status":"Running", "selected":true},
-      {"title":"Use NeDB","complete":66,"status":"Running"},
-      {"title":"Browse by Year","complete":98,"status":"Running"}
-    ],
-    "past-experiments": [
-      {"title":"Show Book Covers","complete":72,"status":"Interrupt"},
-      {"title":"Snap a Review!","complete":100,"status":"Success"},
-      {"title":"Star Ratings","complete":100,"status":"Success"},
-      {"title":"Use RethinkDB","complete":100,"status":"Failure"}
-    ]
+  state = {
+    experiments: []
+  };
+
+  componentDidMount() {
+    getExperiments()
+      .then(res => {
+        this.setState({
+          experiments: res
+        });
+      })
+      .catch(err =>
+        console.log(err));
   }
 
-  renderPendingExperiments = () => {
-    return this.data["planned-experiments"].map((exp) => {
+  renderPlannedExperiments = () => {
+    return this.state.experiments
+      .filter(exp => exp["status"]["type"] === "planned")
+      .map((exp) => {
+      let selected = exp["id"] === this.props.selected ? "selected" : "";
       return (
-        <li className="nav-item" key={exp.title}>
-          <a className="nav-link" href="">{exp["title"]}</a>
+        <li className="nav-item" key={exp["id"]}>
+          <a className={"nav-link " + selected}
+             onClick={() => this.props.select(exp["id"])}>
+             {exp["info"]["title"]}
+          </a>
         </li>
     )});
   }
 
   renderRunningExperiments = () => {
-    return this.data["running-experiments"].map((exp) => {
-      let selected = exp["selected"] ? "selected" : "";
+    return this.state.experiments
+      .filter(exp => exp["status"]["type"] === "running")
+      .map((exp) => {
+      let selected = exp["id"] === this.props.info.selected
+        ? "selected" : "";
       return (
-        <li className="nav-item" key={exp.title}>
-          <a className={"nav-link " + selected} href="">{exp["title"]}
-            <span className="badge badge-light float-right">{exp["complete"]}%</span>
+        <li className="nav-item" key={exp["id"]}>
+          <a className={"nav-link " + selected}
+             onClick={() => this.props.select(exp["id"])}>
+            {exp["info"]["title"]}
+            <span className="badge badge-light float-right">
+              {computePercentage(exp)}%
+            </span>
           </a>
         </li>
     )});
   }
 
   renderPastExperiments = () => {
-    return this.data["past-experiments"].map((exp) => {
+    return this.state.experiments
+      .filter(exp => exp["status"]["type"] === "past")
+      .map((exp) => {
       let attr = "";
-      switch(exp["status"]) {
-        case "Interrupt" :
+      switch(exp["status"]["outcome"]) {
+        case "interrupted" :
           attr = "fa-minus-circle interrupt"; break;
-        case "Success" :
+        case "succeeded" :
           attr = "fa-check-circle success"; break;
-        case "Failure" :
+        case "failed" :
           attr = "fa-times-circle failure"; break;
         default :
           attr = "fa-circle"; break;
       }
+      let selected = exp["id"] === this.props.info.selected
+        ? "selected" : "";
       return (
-        <li className="nav-item" key={exp.title}>
-          <a className="nav-link" href="">
-            <i className={"fa sidebar-icon " + attr}/>{exp["title"]}
+        <li className="nav-item" key={exp["id"]}>
+          <a className={"nav-link " + selected}
+             onClick={() => this.props.select(exp["id"])}>
+            <i className={"fa sidebar-icon " + attr}/>
+            {exp["info"]["title"]}
           </a>
         </li>
     )});
   }
 
   render() {
+    let plannedExperiments = this.renderPlannedExperiments();
+    let runningExperiments = this.renderRunningExperiments();
+    let pastExperiments = this.renderPastExperiments();
+    let btnClass = (this.props.info.editing) ? "" : "btn-light";
     return (
       <nav className="col-sm-3 col-md-2 d-none d-sm-block bg-dark sidebar">
         <ul className="nav nav-pills flex-column">
           <li className="nav-item">
-            <span className="nav-link disabled sidebar-txt">Planned Experiments</span>
+            <span className="nav-link">
+              <button className={"btn sidebar-btn " + btnClass} onClick={this.props.toggleCreate}>
+                {(this.props.info.editing) ? "Cancel" : "+ New Experiment"}
+              </button>
+            </span>
           </li>
-          {this.renderPendingExperiments()}
         </ul>
         <ul className="nav nav-pills flex-column">
-          <li className="nav-item">
-            <span className="nav-link disabled sidebar-txt">Running Experiments</span>
-          </li>
-          {this.renderRunningExperiments()}
+          {(plannedExperiments.length === 0 ? <div></div> :
+          (<li className="nav-item">
+            <span className="nav-link disabled sidebar-txt">
+              Planned Experiments
+            </span>
+           </li>))}
+          {plannedExperiments}
         </ul>
         <ul className="nav nav-pills flex-column">
-          <li className="nav-item">
-            <span className="nav-link disabled sidebar-txt">Past Experiments</span>
-          </li>
-          {this.renderPastExperiments()}
+          {(runningExperiments.length === 0 ? <div></div> :
+          (<li className="nav-item">
+            <span className="nav-link disabled sidebar-txt">
+              Running Experiments
+            </span>
+           </li>))}
+          {runningExperiments}
+        </ul>
+        <ul className="nav nav-pills flex-column">
+          {(pastExperiments.length === 0 ? <div></div> :
+          (<li className="nav-item">
+            <span className="nav-link disabled sidebar-txt">
+              Past Experiments
+            </span>
+           </li>))}
+          {pastExperiments}
         </ul>
       </nav>
     );
