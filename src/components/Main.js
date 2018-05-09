@@ -66,7 +66,7 @@ class Main extends Component {
     switch (exp["status"]["type"]) {
       case "planned":
         return (this.state.preparing) ? (
-          <button type="button" className="btn btn-secondary pull-right run-btn disabled">
+          <button type="button" className="btn btn-light pull-right run-btn disabled">
             <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
             {" Preparing"}
           </button>
