@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { getServices } from '../../api/api';
 
 
-class Versions extends Component {
+class Service extends Component {
 
   initialState = {
-    "repo":"",
-    "masterbranch":"",
-    "experimentbranch":""
+    "name":"",
+    "image":"",
+    "services":[]
   };
 
   constructor(props) {
@@ -14,8 +15,29 @@ class Versions extends Component {
     if (Object.keys(props.experiment).length === 0) {
       this.state = this.initialState;
     } else {
-      this.state = props.experiment.versions;
+      this.state = {...props.experiment.service,
+        "services" : []
+      }
     }
+  }
+
+  getInfo() {
+    return {
+      "name" : this.state.name,
+      "image" : this.state.image
+    }
+  }
+
+  componentDidMount() {
+    getServices()
+      .then(res => {
+        this.setState({
+          services: res.items.map((service) =>
+            {return service.metadata.name})
+        });
+      })
+      .catch(err =>
+        console.log(err));
   }
 
   handleChange = (event) => {
@@ -25,12 +47,22 @@ class Versions extends Component {
     });
   }
 
+  renderServices = () => {
+    return this.state.services
+      .map((service) => {
+      return (
+        <option key={service} value={service}>
+          {service}
+        </option>
+    )});
+  }
+
   render() {
     return (
       <div className="col-sm-6">
         <div className="card">
           <h5 className="card-header text-center">
-            Versions
+            Service Details
             <button href="" className="btn badge badge-secondary main-tag pull-right">
               ?
             </button>
@@ -40,22 +72,11 @@ class Versions extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
-                    Repository
+                    Service
                   </div>
                   <div className="col-sm-9">
-                    <input type="url" className="form-control" name="repo" placeholder="Git repository URL" value={this.state.repo} onChange={this.handleChange}/>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    Main Branch
-                  </div>
-                  <div className="col-sm-9">
-                    <select className="form-control" name="masterbranch" value={this.state.masterbranch} onChange={this.handleChange}>
-                      <option value="master (d8329fc)">master (d8329fc)</option>
-                      <option value="recent_reviews (4e65cc7)">recent_reviews (4e65cc7)</option>
+                    <select className="form-control" name="name" value={this.state.name} onChange={this.handleChange}>
+                      {this.renderServices()}
                     </select>
                   </div>
                 </div>
@@ -63,13 +84,10 @@ class Versions extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
-                    Experiment Branch
+                    New Image
                   </div>
                   <div className="col-sm-9">
-                    <select className="form-control" name="experimentbranch" value={this.state.experimentbranch} onChange={this.handleChange}>
-                      <option value="recent_reviews (4e65cc7)">recent_reviews (4e65cc7)</option>
-                      <option value="master (d8329fc)">master (d8329fc)</option>
-                    </select>
+                    <input type="url" className="form-control" name="image" placeholder="e.g. gcr.io/project-name/image:tag" value={this.state.image} onChange={this.handleChange}/>
                   </div>
                 </div>
               </li>
@@ -81,4 +99,4 @@ class Versions extends Component {
   }
 }
 
-export default Versions;
+export default Service;

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Info from './create/Info';
 import Hypothesis from './create/Hypothesis';
-import Versions from './create/Versions';
+import Service from './create/Service';
 import Rules from './create/Rules';
 import Metrics from './create/Metrics';
 
 import uuidv4 from 'uuid';
-import { postExperiment } from '../api/contentAPI';
+import { postExperiment } from '../api/api';
 
 
 class Create extends Component {
@@ -27,9 +27,9 @@ class Create extends Component {
       "id" : id,
       "info" : this.info.state,
       "hypothesis" : this.hypo.state,
-      "versions": this.versions.state,
+      "service": this.service.getInfo(),
       "rules" : this.rules.state,
-      "metrics" : this.metrics.state.metrics,
+      "metrics" : this.metrics.getInfo(),
       "status" : status,
       "time" : time
     })
@@ -52,7 +52,7 @@ class Create extends Component {
           <Hypothesis experiment={exp} ref={(hypo) => {this.hypo = hypo}}/>
         </section>
         <section className="row">
-          <Versions experiment={exp} ref={(versions) => {this.versions = versions}}/>
+          <Service experiment={exp} ref={(service) => {this.service = service}}/>
           <Rules experiment={exp} ref={(rules) => {this.rules = rules}}/>
         </section>
         <section className="row">

@@ -6,7 +6,9 @@
     "body-parser": "^1.18.2",
     "chart.js": "^1.1.1",
     "concurrently": "^3.5.1",
+    "es6-promise": "^4.2.4",
     "express": "^4.16.2",
+    "isomorphic-fetch": "^2.2.1",
     "nedb": "^1.8.0",
     "npm": "^5.7.1",
     "react": "^16.2.0",
@@ -20,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "hype": "concurrently --kill-others-on-fail \"cd server && node server.js\" \"cd metrics && node metrics.js\" \"npm start\""
+    "hype": "concurrently --kill-others-on-fail \"kubectl proxy --port=5200\" \"cd server && node server.js\" \"cd metrics && node metrics.js\" \"npm start\""
   },
   "proxy": {
     "/api": {

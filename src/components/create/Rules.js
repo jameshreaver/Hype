@@ -4,17 +4,7 @@ import React, { Component } from 'react';
 class Rules extends Component {
 
   initialState = {
-    "percentage":50,
-    "useragent":{
-      "on":false,
-      "pred":"",
-      "value":""
-    },
-    "visitor":{
-      "on":false,
-      "pred":"",
-      "value":""
-    },
+    "percentage":50
   };
 
   constructor(props) {
@@ -26,32 +16,11 @@ class Rules extends Component {
     }
   }
 
-
   handleChange = (event) => {
     let target = event.target;
     this.setState({
       [target.name]: target.value
     });
-  }
-
-  handleChangeUserAgent = (event) => {
-    let target = event.target;
-    this.setState({
-      useragent: {...this.state.useragent,
-        [target.name]: target.type === 'checkbox'
-        ? target.checked
-        : target.value
-    }});
-  }
-
-  handleChangeVisitor = (event) => {
-    let target = event.target;
-    this.setState({
-      visitor: {...this.state.visitor,
-        [target.name]: target.type === 'checkbox'
-        ? target.checked
-        : target.value
-    }});
   }
 
   render() {
@@ -83,50 +52,8 @@ class Rules extends Component {
                 </div>
               </li>
               <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-1">
-                    <input type="checkbox" className="" name="on" onChange={this.handleChangeUserAgent} checked={this.state.useragent.on}/>
-                  </div>
-                  <div className="col-sm-3 card-subtext">
-                    User Agent
-                  </div>
-                  <div className="col-sm-3">
-                    <select className="form-control" name="pred" onChange={this.handleChangeUserAgent} value={this.state.useragent.pred}>
-                      <option value="is">is</option>
-                      <option value="is not">is not</option>
-                    </select>
-                  </div>
-                  <div className="col-sm-5">
-                    <select className="form-control" name="value" onChange={this.handleChangeUserAgent} value={this.state.useragent.value}>
-                      <option value="Google Chrome">Google Chrome</option>
-                      <option value="Internet Explorer">Internet Explorer</option>
-                      <option value="Safari">Safari</option>
-                      <option value="Mozilla Firefox">Mozilla Firefox</option>
-                    </select>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-1">
-                    <input type="checkbox" className="" name="on" onChange={this.handleChangeVisitor} checked={this.state.visitor.on}/>
-                  </div>
-                  <div className="col-sm-3 card-subtext">
-                    Visitor
-                  </div>
-                  <div className="col-sm-3">
-                    <select className="form-control" name="pred" onChange={this.handleChangeVisitor} value={this.state.visitor.pred}>
-                      <option value="is">is</option>
-                      <option value="is not">is not</option>
-                    </select>
-                  </div>
-                  <div className="col-sm-5">
-                    <select className="form-control" name="value" onChange={this.handleChangeVisitor} value={this.state.visitor.value}>
-                      <option value="logged in">logged in</option>
-                      <option value="returning">returning</option>
-                    </select>
-                  </div>
-                </div>
+                <i className={"fa sidebar-icon fa-check-circle"}/>
+                <span className="font-weight-bold">{this.state["percentage"]}%</span> of traffic will be redirected to the experiment.
               </li>
             </ul>
           </div>

@@ -50,14 +50,60 @@ class Overview extends Component {
         <div className="progress progress-main">
           {this.renderProgressBar(exp)}
         </div>
-        <h4 className="main-header">Metrics Overview
-          <button className="btn badge badge-secondary main-tag pull-right">
-            Expand
-          </button>
-        </h4>
         <div className="card">
+          <h5 className="card-header text-center">
+            Experiment Overview
+            <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.props.toggleEdit}>
+              Edit
+            </button>
+          </h5>
           <div className="card-block">
             <ul className="list-group list-group-flush">
+              <li className="list-group-item">
+                <section className="row">
+                  <div className="col-sm-4 version-left">
+                      <div className="card-subtext spaced">
+                        Version A
+                      </div>
+                  </div>
+                  <div className="col-sm-4 text-center">
+                    <div className="text-center">
+                      <span className="routing-percentages">
+                        {100-exp["rules"]["percentage"]}%
+                      </span>
+                      <span className="routing-spaced"/>
+                      <span className="routing-percentages">
+                        {exp["rules"]["percentage"]}%
+                      </span>
+                    </div>
+                  </div>
+                  <div className="col-sm-4 version-right">
+                      <div className="card-subtext text-right spaced">
+                        Version B
+                      </div>
+                  </div>
+                </section>
+                <div className="col-sm-12">
+                    <div className="monospace pull-right">
+                      {exp["service"]["name"] + '-b'}
+                    </div>
+                    <div className="monospace">
+                      {exp["service"]["name"] + '-a'}
+                    </div>
+                </div>
+                <section className="row">
+                  <div className="col-sm-12 routing-icon">
+                    <div className="card-subtext text-center spaced">
+                      <i className="fa fa-long-arrow-left routing-arrow-left fa-3x"></i>
+                      <span className="fa-stack fa-2x">
+                        <i className="fa fa-arrows fa-stack-1x"></i>
+                        <i className="fa fa-circle-thin fa-stack-2x"></i>
+                      </span>
+                      <i className="fa fa-long-arrow-right routing-arrow-right fa-3x"></i>
+                    </div>
+                  </div>
+                </section>
+              </li>
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
@@ -90,30 +136,6 @@ class Overview extends Component {
                   <div className="col-sm-9">
                     <div className="progress progress-metric">
                       {this.randomNumber(20,45,1000)}
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    #4 Reviews Read
-                  </div>
-                  <div className="col-sm-9">
-                    <div className="progress progress-metric">
-                      {this.randomNumber(65,92,2000)}
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    #5 Reviews Added
-                  </div>
-                  <div className="col-sm-9">
-                    <div className="progress progress-metric">
-                      {this.randomNumber(20,50,200)}
                     </div>
                   </div>
                 </div>

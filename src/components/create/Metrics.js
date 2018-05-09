@@ -18,6 +18,10 @@ class Info extends Component {
     }
   }
 
+  getInfo() {
+    return this.state.metrics;
+  }
+
   addMetric = () => {
     this.setState({
       "metrics": [...this.state.metrics, {

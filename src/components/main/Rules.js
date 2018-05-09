@@ -41,10 +41,10 @@ class Rules extends Component {
                 </section>
                 <div className="col-sm-12">
                     <div className="monospace pull-right">
-                      {exp["versions"]["experimentbranch"]}
+                      {exp["service"]["name"]}
                     </div>
                     <div className="monospace">
-                      {exp["versions"]["masterbranch"]}
+                      {exp["service"]["name"]}
                     </div>
                 </div>
                 <section className="row">

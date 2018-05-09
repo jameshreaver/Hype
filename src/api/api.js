@@ -1,4 +1,4 @@
-async function getContent (path) {
+async function getAPI (path) {
   let response = await fetch('/api' + path);
   let body = await response.json();
   if (response.status !== 200) {
@@ -7,7 +7,7 @@ async function getContent (path) {
   return body;
 }
 
-async function postContent (path, data) {
+async function postAPI (path, data) {
   await fetch('/api' + path, {
     method: 'post',
     headers: {
@@ -18,13 +18,21 @@ async function postContent (path, data) {
 }
 
 export function getExperiments() {
-  return getContent('/experiments');
+  return getAPI('/data/experiments/');
 };
 
 export function getExperiment(id) {
-  return getContent('/experiment/' + id);
+  return getAPI('/data/experiment/' + id);
 };
 
 export function postExperiment(data) {
-  return postContent('/experiment', data);
+  return postAPI('/data/experiment/', data);
+};
+
+export function getServices() {
+  return getAPI('/k8s/services/');
+};
+
+export function runExperiment(id) {
+  return getAPI('/run/experiment/' + id);
 };

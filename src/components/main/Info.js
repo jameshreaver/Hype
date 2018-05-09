@@ -133,10 +133,10 @@ class Info extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
-                    Branch
+                    Service
                   </div>
                   <div className="col-sm-9 monospace">
-                    {exp["versions"]["experimentbranch"]}
+                    {exp["service"]["name"]}
                   </div>
                 </div>
               </li>

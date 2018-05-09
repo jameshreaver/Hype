@@ -6,9 +6,30 @@ import Rules from './main/Rules';
 import Metrics from './main/Metrics';
 import { computeUntilDate } from '../util/utils';
 import { computePercentage } from '../util/utils';
+import { runExperiment } from '../api/api';
 
 
 class Main extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      preparing: false
+    };
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      preparing: false
+    });
+  }
+
+  run(exp) {
+    runExperiment(exp["id"]);
+    this.setState({
+      preparing: true
+    });
+  }
 
   renderOutcome(outcome) {
     switch (outcome) {
@@ -45,12 +66,17 @@ class Main extends Component {
     })
     switch (exp["status"]["type"]) {
       case "planned":
-        return (
-          <button type="button"
+        return (this.state.preparing) ? (
+          <button type="button" className="btn btn-secondary pull-right run-btn disabled">
+            <i className="fa fa-circle-o-notch fa-spin fa-fw"/>
+            {" Preparing"}
+          </button>
+        ) : (
+          <button type="button" onClick={() => {this.run(exp)}}
             className="btn btn-info pull-right run-btn">
             Run Experiment
           </button>
-        );
+        ) ;
       case "running":
         return (
           <h1 className="pull-right">{computePercentage(exp)}%
@@ -66,7 +92,6 @@ class Main extends Component {
 
   render() {
     let exp = this.props.experiment;
-
     return (
       <main role="main" className="col-sm-9 ml-sm-auto col-md-10 pt-3">
         {this.renderHeader()}

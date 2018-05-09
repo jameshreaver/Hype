@@ -3,11 +3,10 @@ import Sidebar from './Sidebar';
 import Main from './Main';
 import Create from './Create';
 import Landing from './Landing';
-import { getExperiment } from '../api/contentAPI';
+import { getExperiment } from '../api/api';
 
 
 class Body extends Component {
-
 
   constructor(props) {
     super(props)

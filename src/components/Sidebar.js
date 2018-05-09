@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { computePercentage } from '../util/utils';
-import { getExperiments } from '../api/contentAPI';
+import { getExperiments } from '../api/api';
 
 class Sidebar extends Component {
 
@@ -23,7 +23,7 @@ class Sidebar extends Component {
     return this.state.experiments
       .filter(exp => exp["status"]["type"] === "planned")
       .map((exp) => {
-      let selected = exp["id"] === this.props.selected ? "selected" : "";
+      let selected = exp["id"] === this.props.info.selected ? "selected" : "";
       return (
         <li className="nav-item" key={exp["id"]}>
           <a className={"nav-link " + selected}
