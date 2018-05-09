@@ -3,7 +3,6 @@ import Info from './main/Info';
 import Overview from './main/Overview';
 import Hypothesis from './main/Hypothesis';
 import Rules from './main/Rules';
-import Metrics from './main/Metrics';
 import { computeUntilDate } from '../util/utils';
 import { computePercentage } from '../util/utils';
 import { runExperiment } from '../api/api';
