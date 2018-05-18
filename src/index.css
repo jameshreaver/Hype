@@ -252,6 +252,11 @@ main {
   color:red;
 }
 
+.routing-bar {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 .routing-rules {
   margin-left:-26px;
   list-style-type: none;

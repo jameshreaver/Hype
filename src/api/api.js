@@ -33,6 +33,14 @@ export function getServices() {
   return getAPI('/k8s/services/');
 };
 
+export function getDeployments() {
+  return getAPI('/k8s/deployments/');
+};
+
+export function getBranches(source) {
+  return getAPI('/git/branches/' + source);
+};
+
 export function runExperiment(id) {
   return getAPI('/run/experiment/' + id);
 };

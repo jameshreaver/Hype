@@ -69,11 +69,11 @@ class Overview extends Component {
                   <div className="col-sm-4 text-center">
                     <div className="text-center">
                       <span className="routing-percentages">
-                        {100-exp["rules"]["percentage"]}%
+                        {100-exp["settings"]["percentage"]}%
                       </span>
                       <span className="routing-spaced"/>
                       <span className="routing-percentages">
-                        {exp["rules"]["percentage"]}%
+                        {exp["settings"]["percentage"]}%
                       </span>
                     </div>
                   </div>
@@ -85,10 +85,10 @@ class Overview extends Component {
                 </section>
                 <div className="col-sm-12">
                     <div className="monospace pull-right">
-                      {exp["service"]["name"] + '-b'}
+                      {exp["settings"]["exp-branch"]}
                     </div>
                     <div className="monospace">
-                      {exp["service"]["name"] + '-a'}
+                      {exp["settings"]["main-branch"]}
                     </div>
                 </div>
                 <section className="row">

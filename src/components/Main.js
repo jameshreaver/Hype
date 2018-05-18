@@ -97,7 +97,7 @@ class Main extends Component {
         <h1>"{exp["info"]["title"]}"</h1>
         <section className="row">
           <Info experiment={exp} toggleEdit={this.props.toggleEdit}/>
-          <Overview experiment={exp}/>
+          <Overview experiment={exp} toggleEdit={this.props.toggleEdit}/>
         </section>
         <div>
           <h2 className="header-spaced">Experiment Details</h2>

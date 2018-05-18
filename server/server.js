@@ -12,6 +12,8 @@ app.use(bodyParser.json())
 let kubeHost = "http://localhost:5200/";
 let serviceAPI = "/api/v1/namespaces/default/services/"
 let deployAPI = "/apis/apps/v1beta1/namespaces/default/deployments/"
+let githubAPI = "https://api.github.com/";
+let registryURL = "gcr.io/booksnap-h/";
 
 var Datastore = require('nedb')
 var expDB = new Datastore({
@@ -30,7 +32,7 @@ app.listen(port, () => {
 });
 
 async function getAPI (path) {
-  let response = await fetch(kubeHost + path);
+  let response = await fetch(path);
   let body = await response.json();
   if (response.status !== 200) {
     throw Error(body.message);
@@ -39,7 +41,7 @@ async function getAPI (path) {
 }
 
 async function postAPI (path, data) {
-  await fetch(kubeHost + path, {
+  await fetch(path, {
     method: 'post',
     headers: {
       "Content-type": "application/json"
@@ -49,7 +51,7 @@ async function postAPI (path, data) {
 }
 
 async function deleteAPI (path) {
-  await fetch(kubeHost + path, {
+  await fetch(path, {
     method: 'delete',
     headers: {
       "Content-type": "application/json"
@@ -59,54 +61,84 @@ async function deleteAPI (path) {
 
 // getServices()
 app.get('/api/k8s/services/', (req, res) => {
-  getAPI(serviceAPI)
+  getAPI(kubeHost + serviceAPI)
     .then(services => {
       res.send(services);
     }).catch(err =>
       console.log(err));
 });
 
+// getDeployments()
+app.get('/api/k8s/deployments/', (req, res) => {
+  getAPI(kubeHost + deployAPI)
+    .then(deployments => {
+      res.send(deployments);
+    }).catch(err =>
+      console.log(err));
+});
+
+// getBranches()
+app.get('/api/git/branches/:owner/:repo', (req, res) => {
+  //res.send([{"name":"browse-button","commit":{"sha":"dec988c"}},{"name":"master","commit":{"sha":"1015cdb"}}]);
+  getAPI(githubAPI + "repos/" + req.params.owner
+  + "/" + req.params.repo + "/branches")
+    .then(branches => {
+      res.send(branches);
+    }).catch(err => {
+      console.log(err);
+      res.send([]);
+    });
+});
+
 // runExperiment(id)
 app.get('/api/run/experiment/:id', (req, res) => {
   expDB.find({id: req.params.id}, {})
     .limit(1).exec(function (err, docs) {
-      let service = docs[0]["service"];
-      createDeployments(service);
+      let settings = docs[0]["settings"];
+      let info = {
+        "default-name": settings["source"].split("/")[1],
+        "main-branch": settings["main-branch"].split("@")[0],
+        "main-sha": settings["main-branch"].split("@")[1],
+        "exp-branch": settings["exp-branch"].split("@")[0],
+        "exp-sha": settings["exp-branch"].split("@")[1]
+      };
+      console.log(info);
+      //createDeployments(info);
       //createServices(service);
       //createRouter();
-      expDB.update({id: req.params.id},
-        { $set: {
-          "status.type": "running",
-          "time.started": new Date().toJSON()
-        } }, {}, () => {});
-      expDB.persistence.compactDatafile();
-      console.log("Running experiment " +
-        docs[0]["info"]["title"]);
-      res.end();
+      //expDB.update({id: req.params.id},
+      //  { $set: {
+      //    "status.type": "running",
+      //    "time.started": new Date().toJSON()
+      //  } }, {}, () => {});
+      //expDB.persistence.compactDatafile();
+      //console.log("Running experiment " +
+      //  docs[0]["info"]["title"]);
   });
+  res.send([]);
 });
 
-function createDeployments(service) {
-  let name = service["name"];
-  getAPI(deployAPI + name)
+function createDeployments(info) {
+  let name = info["default-name"];
+  getAPI(kubeHost + deployAPI + name)
     .then(config => {
       configDB.update({
         "metadata.name": config.metadata.name
       }, config, { upsert:true }, ()=>{});
       configDB.persistence.compactDatafile();
-      let image = config.spec.template.spec.containers[0].image;
-      createDeployment(name + "-a", config, image);
-      createDeployment(name + "-b", config, service["image"]);
+      createDeployment(name + "-" + info["main-branch"], info["main-sha"], config);
+      createDeployment(name + "-" + info["exp-branch"], info["exp-sha"], config);
       deleteDeployment(name);
     }).catch(err =>
       console.log(err));
 }
 
-function createDeployment(name, config, image) {
+function createDeployment(name, sha, config) {
   config.metadata.name = name;
   config.metadata.resourceVersion = '';
-  config.spec.template.spec.containers[0].image = image;
-  postAPI(deployAPI, config)
+  config.spec.template.spec.containers[0].image = registryURL + name + ':' + sha;
+  config.spec.template.spec.containers[0].imagePullPolicy = "Always";
+  postAPI(kubeHost + deployAPI, config)
     .then(res => {
       console.log("Created Deployment " + name);
     }).catch(err =>
@@ -114,7 +146,7 @@ function createDeployment(name, config, image) {
 }
 
 function deleteDeployment(name) {
-  deleteAPI(deployAPI + name)
+  deleteAPI(kubeHost + deployAPI + name)
     .then(res => {
       console.log("Deleted Deployment " + name);
     }).catch(err =>

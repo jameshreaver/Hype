@@ -25,11 +25,11 @@ class Rules extends Component {
                   <div className="col-sm-4 text-center">
                     <div className="text-center">
                       <span className="routing-percentages">
-                        {100-exp["rules"]["percentage"]}%
+                        {100-exp["settings"]["percentage"]}%
                       </span>
                       <span className="routing-spaced"/>
                       <span className="routing-percentages">
-                        {exp["rules"]["percentage"]}%
+                        {exp["settings"]["percentage"]}%
                       </span>
                     </div>
                   </div>
@@ -41,10 +41,10 @@ class Rules extends Component {
                 </section>
                 <div className="col-sm-12">
                     <div className="monospace pull-right">
-                      {exp["service"]["name"]}
+                      {exp["settings"]["exp-branch"]}
                     </div>
                     <div className="monospace">
-                      {exp["service"]["name"]}
+                      {exp["settings"]["main-branch"]}
                     </div>
                 </div>
                 <section className="row">
@@ -65,7 +65,7 @@ class Rules extends Component {
                   <ul className="routing-rules">
                     <li>
                       <i className={"fa sidebar-icon fa-check-circle"}/>
-                      Currently <span className="font-weight-bold">{exp["rules"]["percentage"]}%</span> of traffic is being redirected to version B.
+                      Currently <span className="font-weight-bold">{exp["settings"]["percentage"]}%</span> of traffic is being redirected to version B.
                     </li>
                     <li>
                       <i className={"fa sidebar-icon fa-times-circle"}/>
