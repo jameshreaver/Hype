@@ -43,7 +43,7 @@ class Settings extends Component {
   }
 
   componentDidMount() {
-    //this.fetchBranches(this.state.source);
+    this.fetchBranches(this.state.source);
   }
 
   handleChange = (event) => {

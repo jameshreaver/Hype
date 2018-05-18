@@ -103,19 +103,19 @@ app.get('/api/run/experiment/:id', (req, res) => {
         "exp-sha": settings["exp-branch"].split("@")[1]
       };
       console.log(info);
-      //createDeployments(info);
+      createDeployments(info);
       //createServices(service);
       //createRouter();
-      //expDB.update({id: req.params.id},
-      //  { $set: {
-      //    "status.type": "running",
-      //    "time.started": new Date().toJSON()
-      //  } }, {}, () => {});
-      //expDB.persistence.compactDatafile();
-      //console.log("Running experiment " +
-      //  docs[0]["info"]["title"]);
+      expDB.update({id: req.params.id},
+        { $set: {
+          "status.type": "running",
+          "time.started": new Date().toJSON()
+        } }, {}, () => {});
+      expDB.persistence.compactDatafile();
+      console.log("Running experiment " +
+        docs[0]["info"]["title"]);
   });
-  res.send([]);
+  res.end();
 });
 
 function createDeployments(info) {
