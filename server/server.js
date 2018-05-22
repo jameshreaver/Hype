@@ -50,6 +50,16 @@ async function postAPI (path, data) {
   });
 }
 
+async function patchAPI (path, data) {
+  await fetch(path, {
+    method: 'patch',
+    headers: {
+      "Content-type": "application/merge-patch+json"
+    },
+    body: JSON.stringify(data)
+  });
+}
+
 async function deleteAPI (path) {
   await fetch(path, {
     method: 'delete',
@@ -100,23 +110,40 @@ app.get('/api/run/experiment/:id', (req, res) => {
         "main-branch": settings["main-branch"].split("@")[0],
         "main-sha": settings["main-branch"].split("@")[1],
         "exp-branch": settings["exp-branch"].split("@")[0],
-        "exp-sha": settings["exp-branch"].split("@")[1]
+        "exp-sha": settings["exp-branch"].split("@")[1],
+        "replicas": parseInt(settings["percentage"])/10
       };
       console.log(info);
+      patchService(docs[0]["info"]["service"]);
       createDeployments(info);
-      //createServices(service);
-      //createRouter();
-      expDB.update({id: req.params.id},
-        { $set: {
-          "status.type": "running",
-          "time.started": new Date().toJSON()
-        } }, {}, () => {});
-      expDB.persistence.compactDatafile();
-      console.log("Running experiment " +
-        docs[0]["info"]["title"]);
+      // createServices(service);
+      // createRouter();
+      // updateExperimentDB(req.params.id);
+      console.log("Running experiment " + docs[0]["info"]["title"]);
   });
   res.end();
 });
+
+function updateExperimentDB(id) {
+  expDB.update({id: id},
+   { $set: {
+     "status.type": "running",
+     "time.started": new Date().toJSON()
+   } }, {}, () => {});
+  expDB.persistence.compactDatafile();
+  console.log("Updated experiment records");
+}
+
+function patchService(service) {
+  let patch = {
+    "spec" : {"sessionAffinity":"ClientIP"}
+  };
+  patchAPI(kubeHost + serviceAPI + service, patch)
+    .then(res => {
+      console.log("Patched Service " + service);
+    }).catch(err =>
+      console.log(err));
+}
 
 function createDeployments(info) {
   let name = info["default-name"];
@@ -126,16 +153,17 @@ function createDeployments(info) {
         "metadata.name": config.metadata.name
       }, config, { upsert:true }, ()=>{});
       configDB.persistence.compactDatafile();
-      createDeployment(name + "-" + info["main-branch"], info["main-sha"], config);
-      createDeployment(name + "-" + info["exp-branch"], info["exp-sha"], config);
+      createDeployment(name + "-" + info["main-branch"], info["main-sha"], info["replicas"], config);
+      createDeployment(name + "-" + info["exp-branch"], info["exp-sha"], 10-info["replicas"], config);
       deleteDeployment(name);
     }).catch(err =>
       console.log(err));
 }
 
-function createDeployment(name, sha, config) {
+function createDeployment(name, sha, replicas, config) {
   config.metadata.name = name;
   config.metadata.resourceVersion = '';
+  config.spec.replicas = replicas;
   config.spec.template.spec.containers[0].image = registryURL + name + ':' + sha;
   config.spec.template.spec.containers[0].imagePullPolicy = "Always";
   postAPI(kubeHost + deployAPI, config)

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getServices } from '../../api/api';
 
 
 class Info extends Component {
@@ -9,7 +10,9 @@ class Info extends Component {
     "target":"",
     "duration":"",
     "durationunit":"",
-    "description":""
+    "service":"",
+    "description":"",
+    "services":[]
   };
 
   constructor(props) {
@@ -17,8 +20,34 @@ class Info extends Component {
     if (Object.keys(props.experiment).length === 0) {
       this.state = this.initialState;
     } else {
-      this.state = props.experiment.info;
+      this.state = {...props.experiment.info,
+        "services" : []
+      }
     }
+  }
+
+  getInfo() {
+    return {
+      "title" : this.state.title,
+      "owner" : this.state.owner,
+      "target" : this.state.target,
+      "duration" : this.state.duration,
+      "durationunit" : this.state.durationunit,
+      "service" : this.state.service,
+      "description" : this.state.description
+    }
+  }
+
+  componentDidMount() {
+    getServices()
+      .then(res => {
+        this.setState({
+          services: res.items.map((service) =>
+            {return service.metadata.name})
+        });
+      })
+      .catch(err =>
+        console.log(err));
   }
 
   handleChange = (event) => {
@@ -27,6 +56,17 @@ class Info extends Component {
       [target.name]: target.value
     });
   }
+
+  renderServices = () => {
+    return this.state.services
+      .map((service) => {
+      return (
+        <option key={service} value={service}>
+          {service}
+        </option>
+    )});
+  }
+
 
   render() {
     return (
@@ -63,16 +103,6 @@ class Info extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
-                    Target
-                  </div>
-                  <div className="col-sm-9">
-                    <input type="text" className="form-control" name="target" onChange={this.handleChange} value={this.state.target} placeholder="Concerned area"/>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
                     Duration
                   </div>
                   <div className="col-sm-3">
@@ -90,6 +120,18 @@ class Info extends Component {
                       <option value="d">Days</option>
                       <option value="w">Weeks</option>
                       <option value="m">Months</option>
+                    </select>
+                  </div>
+                </div>
+              </li>
+              <li className="list-group-item">
+                <div className="row">
+                  <div className="col-sm-3 card-subtext">
+                    Service
+                  </div>
+                  <div className="col-sm-9">
+                    <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange}>
+                      {this.renderServices()}
                     </select>
                   </div>
                 </div>

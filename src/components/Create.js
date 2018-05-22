@@ -24,8 +24,8 @@ class Create extends Component {
     };
     postExperiment({
       "id" : id,
-      "info" : this.info.state,
-      "hypothesis" : this.hypo.state,
+      "info" : this.info.getInfo(),
+      "hypothesis" : this.hypo.getInfo(),
       "settings": this.settings.getInfo(),
       "metrics" : this.metrics.getInfo(),
       "status" : status,

@@ -27,7 +27,8 @@ class Settings extends Component {
     return {
       "source" : this.state.source,
       "main-branch" : this.state["main-branch"],
-      "exp-branch" : this.state["exp-branch"]
+      "exp-branch" : this.state["exp-branch"],
+      "percentage":this.state["percentage"]
     }
   }
 
@@ -115,7 +116,7 @@ class Settings extends Component {
               </li>
               <li className="list-group-item">
                 <section className="">
-                  <input type="range" className="form-control-range routing-bar" name="percentage" value={this.state.percentage} onChange={this.handleChange} min="0" max="100" step="1"/>
+                  <input type="range" className="form-control-range routing-bar" name="percentage" value={this.state.percentage} onChange={this.handleChange} min="0" max="100" step="10"/>
                 </section>
                 <section className="row">
                   <div className="col-sm-3 version-left">
@@ -126,11 +127,11 @@ class Settings extends Component {
                   <div className="col-sm-6 text-center">
                     <div className="text-center">
                       <span className="routing-percentages">
-                        {100-this.state.percentage}%
+                        {this.state.percentage}%
                       </span>
                       <span className="routing-spaced"/>
                       <span className="routing-percentages">
-                        {this.state.percentage}%
+                        {100-this.state.percentage}%
                       </span>
                     </div>
                   </div>
@@ -163,7 +164,7 @@ class Settings extends Component {
               </li>
               <li className="list-group-item">
                 <i className={"fa sidebar-icon fa-check-circle"}/>
-                <span className="font-weight-bold">{this.state["percentage"]}%</span> of traffic will be redirected to the experiment.
+                <span className="font-weight-bold">{100-this.state["percentage"]}%</span> of traffic will be redirected to the experiment.
               </li>
             </ul>
           </div>

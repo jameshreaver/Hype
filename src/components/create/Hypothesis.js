@@ -18,6 +18,10 @@ class Hypothesis extends Component {
     }
   }
 
+  getInfo() {
+    return this.state;
+  }
+
   handleChange = (event) => {
     let target = event.target;
     this.setState({
@@ -41,15 +45,15 @@ class Hypothesis extends Component {
                 <div className="row">
                   <div className="col-sm-4 card-subtext">
                     We believe that...<br/><br/>
-                    <textarea className="form-control" name="change" rows="3" onChange={this.handleChange} value={this.state.change} placeholder="...this feature/capability"/>
+                    <textarea className="form-control" name="change" rows="4" onChange={this.handleChange} value={this.state.change} placeholder="...this feature/capability"/>
                   </div>
                   <div className="col-sm-4 card-subtext">
                     will result in...<br/><br/>
-                    <textarea className="form-control" name="outcome" rows="3" onChange={this.handleChange} value={this.state.outcome} placeholder="...this outcome/result"/>
+                    <textarea className="form-control" name="outcome" rows="4" onChange={this.handleChange} value={this.state.outcome} placeholder="...this outcome/result"/>
                   </div>
                   <div className="col-sm-4 card-subtext">
                     we will succeed if...<br/><br/>
-                    <textarea className="form-control" name="validation" rows="3"  onChange={this.handleChange} value={this.state.validation} placeholder="...these metrics are fulfilled."/>
+                    <textarea className="form-control" name="validation" rows="4"  onChange={this.handleChange} value={this.state.validation} placeholder="...these metrics are fulfilled."/>
                   </div>
                 </div>
               </li>
