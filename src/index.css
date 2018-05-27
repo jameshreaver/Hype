@@ -296,3 +296,29 @@ main {
 .progress-bar.no-transition {
   transition: none;
 }
+
+
+
+/*
+ * Metrics
+ */
+
+.metric {
+ background-color: rgba(0,0,0,.03);
+ border-radius: calc(.25rem - 1px);
+ padding: 24px 24px 20px 24px;
+ border: 1px solid rgba(0,0,0,.08);
+ margin-bottom: 20px;
+}
+
+.metrics-icon {
+  margin-right: 8px;
+}
+
+.metrics-icon.success {
+  color: #28a745;
+}
+
+.metrics-fulfilled {
+  color: #28a745;
+}

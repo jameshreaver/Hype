@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Info from './main/Info';
+import Metrics from './main/Metrics';
 import Overview from './main/Overview';
 import Hypothesis from './main/Hypothesis';
 import Rules from './main/Rules';
@@ -107,8 +108,10 @@ class Main extends Component {
           </section>
         </div>
         <div>
-          {/*<h2 className="header-spaced">Metrics</h2>*/}
-          {/*<Metrics/>*/}
+          <h2 className="header-spaced">Experiment Metrics</h2>
+          <section className="row">
+            <Metrics experiment={exp} toggleEdit={this.props.toggleEdit}/>
+          </section>
         </div>
       </main>
     );

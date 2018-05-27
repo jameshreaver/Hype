@@ -97,6 +97,7 @@ class Settings extends Component {
                   </div>
                   <div className="col-sm-9">
                     <select className="form-control" name="main-branch" value={this.state["main-branch"]} onChange={this.handleChange}>
+                      <option disabled></option>
                       {this.renderBranches()}
                     </select>
                   </div>
@@ -109,6 +110,7 @@ class Settings extends Component {
                   </div>
                   <div className="col-sm-9">
                     <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange}>
+                      <option disabled></option>
                       {this.renderBranches()}
                     </select>
                   </div>

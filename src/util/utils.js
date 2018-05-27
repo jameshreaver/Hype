@@ -2,7 +2,7 @@ export function computePercentage(exp) {
   let started = new Date(exp["time"]["started"]);
   let difference = new Date() - started;
   let result = difference/(computeUntilDate(exp)-started);
-  return parseInt(result * 100, 10);
+  return Math.min(parseInt(result * 100, 10), 100);
 };
 
 export function computeUntilDate(exp) {

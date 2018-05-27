@@ -10,6 +10,7 @@ const port = process.env.PORT || 5100;
 app.use(bodyParser.json())
 
 let kubeHost = "http://localhost:5200/";
+let metricsHost = "http://localhost:4888/";
 let serviceAPI = "/api/v1/namespaces/default/services/"
 let deployAPI = "/apis/apps/v1beta1/namespaces/default/deployments/"
 let githubAPI = "https://api.github.com/";
@@ -181,6 +182,17 @@ function deleteDeployment(name) {
       console.log(err));
 }
 
+// getMetrics(id)
+app.get('/api/metrics/:id', (req, res) => {
+  getAPI(metricsHost + req.params.id)
+    .then(metrics => {
+      res.send(metrics);
+    }).catch(err => {
+      console.log(err);
+      res.send([]);
+  });
+});
+
 // getExperiment(id)
 app.get('/api/data/experiment/:id', (req, res) => {
   expDB.find({id: req.params.id}, {
@@ -211,21 +223,5 @@ app.get('/api/data/experiments/', (req, res) => {
   .sort({ "time.added": 1 })
   .exec(function (err, docs) {
     res.send(docs);
-  });
-});
-
-app.post('/config', (req, res) => {
-  expDB.find({ "versions.url": req.body.url }).exec(function (err, docs) {
-    let name = "";
-    for (let version of docs[0]["versions"]) {
-      if (version["url"] === req.body.url) {
-        console.log(version["url"]+" <-");
-        name = version["type"];
-      }
-    }
-    res.send({
-      "experiment-id" : docs[0]["id"],
-      "version-id" : name
-    });
   });
 });

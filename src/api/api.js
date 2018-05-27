@@ -29,6 +29,10 @@ export function postExperiment(data) {
   return postAPI('/data/experiment/', data);
 };
 
+export function getMetrics(id) {
+  return getAPI('/metrics/' + id);
+};
+
 export function getServices() {
   return getAPI('/k8s/services/');
 };

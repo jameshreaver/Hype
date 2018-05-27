@@ -107,6 +107,7 @@ class Info extends Component {
                   </div>
                   <div className="col-sm-3">
                     <select className="form-control" name="duration" onChange={this.handleChange} value={this.state.duration}>
+                      <option disabled></option>
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -117,6 +118,7 @@ class Info extends Component {
                   </div>
                   <div className="col-sm-6">
                     <select className="form-control" name="durationunit" onChange={this.handleChange} value={this.state.durationunit}>
+                      <option disabled></option>
                       <option value="d">Days</option>
                       <option value="w">Weeks</option>
                       <option value="m">Months</option>
@@ -131,6 +133,7 @@ class Info extends Component {
                   </div>
                   <div className="col-sm-9">
                     <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange}>
+                      <option disabled></option>
                       {this.renderServices()}
                     </select>
                   </div>
