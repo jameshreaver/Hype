@@ -124,10 +124,22 @@ a.nav-link {
 
 a.nav-link.selected,
 a.nav-link.selected:hover {
+  animation: none!important;
   background-color: #61666b;
 }
 
+a.nav-link.completed {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  0% {
+    background-color: #4b5259;
+  }
+}
+
 a.nav-link:hover {
+  animation: none;
   background-color: #4b5259;
 }
 
@@ -189,6 +201,10 @@ main {
 
 .card-subtext.spaced {
   margin-bottom: 6px;
+}
+
+.card-subtext.leftspaced {
+  margin-left: 20px;
 }
 
 .card-status {
@@ -321,4 +337,23 @@ main {
 
 .metrics-fulfilled {
   color: #28a745;
+}
+
+
+/*
+ * Endof
+ */
+
+ .container-endof {
+   margin-bottom: 10px;
+ }
+
+.btn-endof {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0 10px 10px 0;
+}
+
+.desc-endof {
+  margin-bottom: 0px;
 }

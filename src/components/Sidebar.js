@@ -38,15 +38,17 @@ class Sidebar extends Component {
     return this.state.experiments
       .filter(exp => exp["status"]["type"] === "running")
       .map((exp) => {
+      let percentage = computePercentage(exp);
       let selected = exp["id"] === this.props.info.selected
         ? "selected" : "";
+      if (percentage === 100) selected += " completed";
       return (
         <li className="nav-item" key={exp["id"]}>
           <a className={"nav-link " + selected}
              onClick={() => this.props.select(exp["id"])}>
             {exp["info"]["title"]}
             <span className="badge badge-light float-right">
-              {computePercentage(exp)}%
+              {percentage}%
             </span>
           </a>
         </li>

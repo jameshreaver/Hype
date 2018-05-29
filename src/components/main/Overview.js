@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { computePercentage } from '../../util/utils';
+import * as util from '../../util/utils';
 
 class Overview extends Component {
 
@@ -30,7 +30,7 @@ class Overview extends Component {
           <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:"0%"}}></div>
         );
       case "running":
-        let perc = computePercentage(exp);
+        let perc = util.computePercentage(exp);
         return (
           <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:perc.toString()+"%"}}>{perc}%</div>
         );
@@ -41,6 +41,51 @@ class Overview extends Component {
       default:
         return <div></div>
     }
+  }
+
+  computeMetricPercentage(metric) {
+    let change = metric["change"];
+    let result = metric["result"];
+    let value = metric["value"];
+    let x = (change === ">-" || change === "-") ? -result : result;
+    let a = (change === ">-" || change === "<+") ? 3*value : -value;
+    let percentage = (x-a)*100/(value-a);
+    percentage = Math.max(Math.min(percentage, 100), 0);
+    return percentage.toFixed(2);
+  }
+
+  renderKeyMetric(outcome, i) {
+    let unit = util.renderUnit(outcome["unit"]);
+    let perc = this.computeMetricPercentage(outcome);
+    let bg = "bg-success";
+    if (perc < 50) {
+      bg = "bg-danger";
+    } else if (perc < 100) {
+      bg = "bg-warning";
+    }
+    return (
+      <li key={i} className="list-group-item">
+        <div className="row">
+          <div className="col-sm-3 card-subtext">
+            #{i+1} {outcome["type"]+"s"}
+          </div>
+          <div className="col-sm-9">
+            <div className="progress progress-metric">
+              <div className={"progress-bar "+bg} role="progressbar" style={{width:perc+"%"}}>
+                {outcome["result"]+unit+" ("+outcome["change"]+outcome["value"]+unit+")"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    );
+  }
+
+  renderKeyMetrics() {
+    let outcomes = this.props.outcomes;
+    return outcomes.map((outcome, i) => {
+      return this.renderKeyMetric(outcome, i);
+    })
   }
 
   render() {
@@ -104,42 +149,7 @@ class Overview extends Component {
                   </div>
                 </section>
               </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    #1 Page Views
-                  </div>
-                  <div className="col-sm-9">
-                    <div className="progress progress-metric">
-                      {this.randomNumber(75,95,40000)}
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    #2 Click Rate
-                  </div>
-                  <div className="col-sm-9">
-                    <div className="progress progress-metric">
-                      {this.randomNumber(50,80,100)}
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-3 card-subtext">
-                    #3 Unique Visits
-                  </div>
-                  <div className="col-sm-9">
-                    <div className="progress progress-metric">
-                      {this.randomNumber(20,45,1000)}
-                    </div>
-                  </div>
-                </div>
-              </li>
+              {this.renderKeyMetrics()}
             </ul>
           </div>
         </div>

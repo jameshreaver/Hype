@@ -1,35 +1,70 @@
 import React, { Component } from 'react';
 import Info from './main/Info';
+import Endof from './main/Endof';
 import Metrics from './main/Metrics';
 import Overview from './main/Overview';
 import Hypothesis from './main/Hypothesis';
 import Rules from './main/Rules';
-import { computeUntilDate } from '../util/utils';
-import { computePercentage } from '../util/utils';
-import { runExperiment } from '../api/api';
+import * as util from '../util/utils';
+import * as api from '../api/api';
 
 
 class Main extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
+    let exp = props.experiment;
+    this.updateMetrics(exp);
+    this.interval = setInterval(() => {
+      this.updateMetrics()
+    }, 5000);
     this.state = {
+      metrics: util.processMetrics(exp, []),
       preparing: false
     };
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(next) {
+    let exp = next.experiment;
+    this.updateMetrics(exp);
     this.setState({
+      metrics: util.processMetrics(exp, []),
       preparing: false
     });
   }
 
+  componentWillUnmount = () =>{
+    clearInterval(this.interval);
+  }
+
+  updateMetrics(exp = this.props.experiment) {
+    api.getMetrics(exp["id"])
+      .then(data => {
+        this.setState({...this.state,
+          metrics: util.processMetrics(exp, data)
+        });
+      }).catch(err =>
+        console.log(err));
+  }
+
   run(exp) {
-    runExperiment(exp["id"]);
-    this.setState({
+    api.runExperiment(exp["id"]);
+    this.setState({...this.state,
       preparing: true
     });
   }
+
+  evaluateOutcomes() {
+    let exp = this.props.experiment;
+    return exp["metrics"].map((metric, i) => {
+      return {...metric,
+        result: this.state.metrics[i]["value"],
+        status: this.state.metrics[i]["status"]
+      }
+    }).filter((metric) => {
+      return metric["key"];
+    })
+  };
 
   renderOutcome(outcome) {
     switch (outcome) {
@@ -61,9 +96,9 @@ class Main extends Component {
 
   renderHeader() {
     let exp = this.props.experiment;
-    let date = computeUntilDate(exp).toLocaleDateString('en-GB', {
+    let date = util.computeUntilDate(exp).toLocaleDateString('en-GB', {
       day:'numeric', month:'long', year:'numeric'
-    })
+    });
     switch (exp["status"]["type"]) {
       case "planned":
         return (this.state.preparing) ? (
@@ -79,7 +114,7 @@ class Main extends Component {
         ) ;
       case "running":
         return (
-          <h1 className="pull-right">{computePercentage(exp)}%
+          <h1 className="pull-right">{util.computePercentage(exp)}%
             <span className="main-light"> until {date}</span>
           </h1>
         );
@@ -90,15 +125,28 @@ class Main extends Component {
     }
   }
 
+  renderEndOfExperiment(outcomes) {
+    let exp = this.props.experiment;
+    if (util.computeUntilDate(exp) < new Date()) {
+      return (
+        <section className="row">
+          <Endof experiment={exp} outcomes={outcomes} toggleEdit={this.props.toggleEdit}/>
+        </section>
+      );
+    }
+  }
+
   render() {
     let exp = this.props.experiment;
+    let outcomes = this.evaluateOutcomes();
     return (
       <main role="main" className="col-sm-9 ml-sm-auto col-md-10 pt-3">
         {this.renderHeader()}
         <h1>"{exp["info"]["title"]}"</h1>
+        {this.renderEndOfExperiment(outcomes)}
         <section className="row">
           <Info experiment={exp} toggleEdit={this.props.toggleEdit}/>
-          <Overview experiment={exp} toggleEdit={this.props.toggleEdit}/>
+          <Overview experiment={exp} outcomes={outcomes} toggleEdit={this.props.toggleEdit}/>
         </section>
         <div>
           <h2 className="header-spaced">Experiment Details</h2>
@@ -110,7 +158,7 @@ class Main extends Component {
         <div>
           <h2 className="header-spaced">Experiment Metrics</h2>
           <section className="row">
-            <Metrics experiment={exp} toggleEdit={this.props.toggleEdit}/>
+            <Metrics experiment={exp} metrics={this.state.metrics} toggleEdit={this.props.toggleEdit}/>
           </section>
         </div>
       </main>
