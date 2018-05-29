@@ -1,21 +1,46 @@
 import React, { Component } from 'react';
 import { renderUnit } from '../../util/utils';
+import * as api from '../../api/api';
+
 
 class Endof extends Component {
 
   state = {
-    description: "Choose from the above options how you would like to proceed."
+    description: "Choose from the above options how you would like to proceed.",
+    processing: ""
+  }
+
+  componentWillReceiveProps = () => {
+    this.setState({...this.state,
+      processing: ""
+    });
   }
 
   resetDescription = () => {
-    this.setState({
+    this.setState({...this.state,
       description: "Choose from the above options how you would like to proceed."
     });
   }
 
   setDescription = (description) => {
-    this.setState({
+    this.setState({...this.state,
       description: description
+    });
+  }
+
+  endExperiment(success) {
+    let id = this.props.experiment["id"];
+    api.endExperiment(id, success);
+    this.setState({...this.state,
+      processing: "end"
+    });
+  }
+
+  mergeExperiment(success) {
+    let id = this.props.experiment["id"];
+    api.mergeExperiment(id, success);
+    this.setState({...this.state,
+      processing: "merge"
     });
   }
 
@@ -34,42 +59,49 @@ class Endof extends Component {
   }
 
   renderEndButton(success) {
+    let pro = this.state.processing;
+    let button = (pro) ? ((pro === "end") ? "active" : "disabled") : "";
     let successEnd = "End this experiment. Merge and deploy the successful branch manually later.";
     let failureEnd = "End this experiment. The deployment of the unsuccessful branch will be removed.";
+    let text = (pro === "end") ? (<i className="fa fa-circle-o-notch fa-spin fa-fw"/>) : "End Experiment";
     return (success) ? (
-      <button type="button" onMouseEnter={() => this.setDescription(successEnd)} onMouseLeave={this.resetDescription}
-        className={"btn btn-endof btn-success"}>
-        End Experiment
+      <button type="button" onMouseEnter={() => this.setDescription(successEnd)} onMouseLeave={this.resetDescription} onClick={()=>{this.endExperiment(success)}}
+        className={"btn btn-endof btn-success " + button}>
+        {text}
       </button>
     ) : (
-      <button type="button" onMouseEnter={() => this.setDescription(failureEnd)} onMouseLeave={this.resetDescription}
-        className={"btn btn-endof btn-warning"}>
-        End Experiment
+      <button type="button" onMouseEnter={() => this.setDescription(failureEnd)} onMouseLeave={this.resetDescription} onClick={()=>{this.endExperiment(success)}}
+        className={"btn btn-endof btn-warning " + button}>
+        {text}
       </button>
     );
   }
 
   renderMergeButton(success) {
+    let pro = this.state.processing;
+    let button = (pro) ? ((pro === "merge") ? "active" : "disabled") : "";
     let successMerge = "Automatically merge and deploy the branch with the successful changes.";
     let failureMerge = "Merge and deploy the experimental branch despite the failed experiment.";
+    let text = (pro === "merge") ? (<i className="fa fa-circle-o-notch fa-spin fa-fw"/>) : "Merge Experiment";
     return (success) ? (
-      <button type="button" onMouseEnter={() => this.setDescription(successMerge)} onMouseLeave={this.resetDescription}
-        className={"btn btn-endof btn-success"}>
-        Merge Experiment
+      <button type="button" onMouseEnter={() => this.setDescription(successMerge)} onMouseLeave={this.resetDescription} onClick={()=>{this.mergeExperiment(success)}}
+        className={"btn btn-endof btn-success " + button}>
+        {text}
       </button>
     ) : (
-      <button type="button" onMouseEnter={() => this.setDescription(failureMerge)} onMouseLeave={this.resetDescription}
-        className={"btn btn-endof btn-warning"}>
-        Merge Experiment
+      <button type="button" onMouseEnter={() => this.setDescription(failureMerge)} onMouseLeave={this.resetDescription} onClick={()=>{this.mergeExperiment(success)}}
+        className={"btn btn-endof btn-warning " + button}>
+        {text}
       </button>
     );
   }
 
   renderExtendButton() {
+    let button = (this.state.processing) ? "disabled" : "";
     let extend = "Prolong the duration of this experiment and keep collecting metrics.";
     return (
       <button type="button" onMouseEnter={() => this.setDescription(extend)} onMouseLeave={this.resetDescription} onClick={this.props.toggleEdit}
-        className={"btn btn-endof btn-secondary"}>
+        className={"btn btn-endof btn-secondary " + button}>
         Extend Experiment
       </button>
     );

@@ -48,3 +48,13 @@ export function getBranches(source) {
 export function runExperiment(id) {
   return getAPI('/run/experiment/' + id);
 };
+
+export function endExperiment(id, success) {
+  let outcome = (success) ? "success" : "failure";
+  return getAPI('/end/experiment/' + outcome + '/' + id);
+};
+
+export function mergeExperiment(id, success) {
+  let outcome = (success) ? "success" : "failure";
+  return getAPI('/merge/experiment/' + outcome + '/' + id);
+};

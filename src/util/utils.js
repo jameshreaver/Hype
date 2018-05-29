@@ -53,8 +53,9 @@ function processMetric(m, exp, data) {
   let labels = [];
   let datasetA = [];
   let datasetB = [];
+  let today = new Date().setDate(new Date().getDate() + 1);
   for (let date = new Date(exp["time"]["started"]);
-    date <= new Date().setDate(new Date().getDate() + 1);
+    date <= Math.min(today, computeUntilDate(exp));
     date.setDate(date.getDate()+1)) {
     let label = date.toLocaleDateString('en-US');
     labels.push(label);

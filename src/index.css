@@ -349,11 +349,27 @@ main {
  }
 
 .btn-endof {
-  padding-left: 20px;
-  padding-right: 20px;
+  width: 180px;
   margin: 0 10px 10px 0;
+}
+
+.btn-endof.disabled {
+  pointer-events: none;
+}
+
+.btn-endof.active {
+  pointer-events: none;
+  cursor: pointer;
 }
 
 .desc-endof {
   margin-bottom: 0px;
+}
+
+/*
+ * Other
+ */
+
+.hidden {
+  visibility: hidden;
 }

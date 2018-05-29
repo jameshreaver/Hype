@@ -15,9 +15,7 @@ class Main extends Component {
     super(props);
     let exp = props.experiment;
     this.updateMetrics(exp);
-    this.interval = setInterval(() => {
-      this.updateMetrics()
-    }, 5000);
+    this.setInterval(exp);
     this.state = {
       metrics: util.processMetrics(exp, []),
       preparing: false
@@ -27,6 +25,7 @@ class Main extends Component {
   componentWillReceiveProps(next) {
     let exp = next.experiment;
     this.updateMetrics(exp);
+    this.setInterval(exp);
     this.setState({
       metrics: util.processMetrics(exp, []),
       preparing: false
@@ -34,7 +33,19 @@ class Main extends Component {
   }
 
   componentWillUnmount = () =>{
-    clearInterval(this.interval);
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  setInterval(exp) {
+    if (this.interval) clearInterval(this.interval);
+    if (exp["status"]["type"] === "running"
+     && util.computePercentage(exp) < 100) {
+       this.interval = setInterval(() => {
+         this.updateMetrics()
+       }, 5000);
+     }
   }
 
   updateMetrics(exp = this.props.experiment) {
@@ -127,7 +138,8 @@ class Main extends Component {
 
   renderEndOfExperiment(outcomes) {
     let exp = this.props.experiment;
-    if (util.computeUntilDate(exp) < new Date()) {
+    if (exp["status"]["type"] === "running"
+      && util.computeUntilDate(exp) < new Date()) {
       return (
         <section className="row">
           <Endof experiment={exp} outcomes={outcomes} toggleEdit={this.props.toggleEdit}/>
