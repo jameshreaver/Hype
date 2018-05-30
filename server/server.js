@@ -90,7 +90,6 @@ app.get('/api/k8s/deployments/', (req, res) => {
 
 // getBranches()
 app.get('/api/git/branches/:owner/:repo', (req, res) => {
-  //res.send([{"name":"browse-button","commit":{"sha":"dec988c"}},{"name":"master","commit":{"sha":"1015cdb"}}]);
   getAPI(githubAPI + "repos/" + req.params.owner
   + "/" + req.params.repo + "/branches")
     .then(branches => {
@@ -99,6 +98,46 @@ app.get('/api/git/branches/:owner/:repo', (req, res) => {
       console.log(err);
       res.send([]);
     });
+});
+
+// endExperiment(id)
+app.get('/api/end/experiment/:outcome/:id', (req, res) => {
+  expDB.find({id: req.params.id}, {})
+    .limit(1).exec(function (err, docs) {
+      let settings = docs[0]["settings"];
+      let info = {
+        "default-name": settings["source"].split("/")[1],
+        "main-branch": settings["main-branch"].split("@")[0],
+        "main-sha": settings["main-branch"].split("@")[1],
+        "exp-branch": settings["exp-branch"].split("@")[0],
+        "exp-sha": settings["exp-branch"].split("@")[1],
+        "replicas": parseInt(settings["percentage"])/10
+      };
+      endDeployments(info);
+      // setExperimentPast(req.params.id, req.params.outcome);
+      console.log("Ending experiment " + docs[0]["info"]["title"]);
+  });
+  res.end();
+});
+
+// mergeExperiment(id)
+app.get('/api/merge/experiment/:outcome/:id', (req, res) => {
+  expDB.find({id: req.params.id}, {})
+    .limit(1).exec(function (err, docs) {
+      let settings = docs[0]["settings"];
+      let info = {
+        "default-name": settings["source"].split("/")[1],
+        "main-branch": settings["main-branch"].split("@")[0],
+        "main-sha": settings["main-branch"].split("@")[1],
+        "exp-branch": settings["exp-branch"].split("@")[0],
+        "exp-sha": settings["exp-branch"].split("@")[1],
+        "replicas": parseInt(settings["percentage"])/10
+      };
+      mergeDeployments(info);
+      // setExperimentPast(req.params.id, req.params.outcome);
+      console.log("Merging experiment " + docs[0]["info"]["title"]);
+  });
+  res.end();
 });
 
 // runExperiment(id)
@@ -114,34 +153,44 @@ app.get('/api/run/experiment/:id', (req, res) => {
         "exp-sha": settings["exp-branch"].split("@")[1],
         "replicas": parseInt(settings["percentage"])/10
       };
-      console.log(info);
-      patchService(docs[0]["info"]["service"]);
+      //ensureAffinity(docs[0]["info"]["service"]);
       createDeployments(info);
       // createServices(service);
       // createRouter();
-      // updateExperimentDB(req.params.id);
+      // setExperimentRunning(req.params.id);
       console.log("Running experiment " + docs[0]["info"]["title"]);
   });
   res.end();
 });
 
-function updateExperimentDB(id) {
+function setExperimentRunning(id) {
   expDB.update({id: id},
    { $set: {
      "status.type": "running",
      "time.started": new Date().toJSON()
    } }, {}, () => {});
   expDB.persistence.compactDatafile();
-  console.log("Updated experiment records");
+  console.log("Experiment set to \"running\"");
 }
 
-function patchService(service) {
+function setExperimentPast(id, outcome) {
+  expDB.update({id: id},
+   { $set: {
+     "status.type": "past",
+     "status.outcome": outcome,
+     "time.stopped": new Date().toJSON()
+   } }, {}, () => {});
+  expDB.persistence.compactDatafile();
+  console.log("Experiment set to \"stopped\"");
+}
+
+function ensureAffinity(service) {
   let patch = {
     "spec" : {"sessionAffinity":"ClientIP"}
   };
   patchAPI(kubeHost + serviceAPI + service, patch)
     .then(res => {
-      console.log("Patched Service " + service);
+      console.log("Ensure affinity for " + service);
     }).catch(err =>
       console.log(err));
 }
@@ -150,24 +199,49 @@ function createDeployments(info) {
   let name = info["default-name"];
   getAPI(kubeHost + deployAPI + name)
     .then(config => {
+      config.metadata.annotations = {};
       configDB.update({
         "metadata.name": config.metadata.name
-      }, config, { upsert:true }, ()=>{});
-      configDB.persistence.compactDatafile();
-      createDeployment(name + "-" + info["main-branch"], info["main-sha"], info["replicas"], config);
-      createDeployment(name + "-" + info["exp-branch"], info["exp-sha"], 10-info["replicas"], config);
-      deleteDeployment(name);
+      }, config, { upsert:true }, ()=>{
+        let mainimage = name + "-" + info["main-branch"] + ":" + info["main-sha"];
+        let expimage = name + "-" + info["exp-branch"] + ":" + info["exp-sha"];
+        createDeployment(name + "-" + info["main-branch"], mainimage, 10-info["replicas"], config);
+        createDeployment(name + "-" + info["exp-branch"], expimage, info["replicas"], config);
+        deleteDeployment(name);
+        configDB.persistence.compactDatafile();
+      });
     }).catch(err =>
       console.log(err));
 }
 
-function createDeployment(name, sha, replicas, config) {
-  config.metadata.name = name;
-  config.metadata.resourceVersion = '';
-  config.spec.replicas = replicas;
-  config.spec.template.spec.containers[0].image = registryURL + name + ':' + sha;
-  config.spec.template.spec.containers[0].imagePullPolicy = "Always";
-  postAPI(kubeHost + deployAPI, config)
+function endDeployments(info) {
+  let name = info["default-name"];
+  configDB.findOne({"metadata.name": name}, {_id: 0}).exec(function (err, config) {
+    let image = name + "-" + info["main-branch"] + ":" + info["main-sha"];
+    createDeployment(name, image, 1, config);
+    deleteDeployment(name + "-" + info["main-branch"]);
+    deleteDeployment(name + "-" + info["exp-branch"]);
+  });
+}
+
+function mergeDeployments(info) {
+  let name = info["default-name"];
+  configDB.findOne({"metadata.name": name}, {_id: 0}).exec(function (err, config) {
+    let image = name + "-" + info["exp-branch"] + ":" + info["exp-sha"];
+    createDeployment(name, image, 1, config);
+    deleteDeployment(name + "-" + info["main-branch"]);
+    deleteDeployment(name + "-" + info["exp-branch"]);
+  });
+}
+
+function createDeployment(name, image, replicas, config) {
+  let deployConfig = Object.assign({}, config);
+  deployConfig.metadata.name = name;
+  deployConfig.metadata.resourceVersion = '';
+  deployConfig.spec.replicas = replicas;
+  deployConfig.spec.template.spec.containers[0].image = registryURL + image;
+  deployConfig.spec.template.spec.containers[0].imagePullPolicy = "Always";
+  postAPI(kubeHost + deployAPI, deployConfig)
     .then(res => {
       console.log("Created Deployment " + name);
     }).catch(err =>

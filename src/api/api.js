@@ -50,11 +50,11 @@ export function runExperiment(id) {
 };
 
 export function endExperiment(id, success) {
-  let outcome = (success) ? "success" : "failure";
+  let outcome = (success) ? "succeeded" : "failed";
   return getAPI('/end/experiment/' + outcome + '/' + id);
 };
 
 export function mergeExperiment(id, success) {
-  let outcome = (success) ? "success" : "failure";
+  let outcome = (success) ? "succeeded" : "failed";
   return getAPI('/merge/experiment/' + outcome + '/' + id);
 };
