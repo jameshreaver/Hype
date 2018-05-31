@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "hype": "concurrently --kill-others-on-fail \"kubectl proxy --port=5200\" \"cd server && node server.js\" \"npm start\""
+    "hype": "KUBE=5200 concurrently --kill-others-on-fail \"kubectl proxy --port=5200\" \"cd server && node server.js\" \"npm start\""
   },
   "proxy": {
     "/api": {

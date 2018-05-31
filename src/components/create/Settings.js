@@ -25,10 +25,10 @@ class Settings extends Component {
 
   getInfo() {
     return {
-      "source" : this.state.source,
-      "main-branch" : this.state["main-branch"],
-      "exp-branch" : this.state["exp-branch"],
-      "percentage":this.state["percentage"]
+      "source": this.state.source,
+      "main-branch": this.state["main-branch"],
+      "exp-branch": this.state["exp-branch"],
+      "percentage": this.state["percentage"]
     }
   }
 
@@ -59,7 +59,7 @@ class Settings extends Component {
       .map((branch) => {
       let sha = branch.commit.sha.substring(0, 7);
       return (
-        <option key={sha} value={branch.name + '@' + sha}>
+        <option key={branch.name} value={branch.name}>
           {branch.name + " (" + sha + ")"}
         </option>
     )});

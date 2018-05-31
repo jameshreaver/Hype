@@ -27,7 +27,7 @@ class Body extends Component {
     getExperiment(id)
       .then(res => {
         this.setState({
-          experiment: res[0],
+          experiment: res,
           selected: id,
           editing: false,
         });
