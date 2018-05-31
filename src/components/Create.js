@@ -22,6 +22,7 @@ class Create extends Component {
       "started":"",
       "stopped":""
     };
+    let logs = old ? exp.logs : [];
     postExperiment({
       "id" : id,
       "info" : this.info.getInfo(),
@@ -29,7 +30,8 @@ class Create extends Component {
       "settings": this.settings.getInfo(),
       "metrics" : this.metrics.getInfo(),
       "status" : status,
-      "time" : time
+      "time" : time,
+      "logs" : logs
     })
   }
 

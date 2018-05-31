@@ -114,7 +114,7 @@ app.get('/api/end/experiment/:outcome/:id', (req, res) => {
         "replicas": parseInt(settings["percentage"])/10
       };
       endDeployments(info);
-      // setExperimentPast(req.params.id, req.params.outcome);
+      // setExperimentPast(req.params.id, req.params.outcome, "ended");
       console.log("Ending experiment " + docs[0]["info"]["title"]);
   });
   res.end();
@@ -134,7 +134,7 @@ app.get('/api/merge/experiment/:outcome/:id', (req, res) => {
         "replicas": parseInt(settings["percentage"])/10
       };
       mergeDeployments(info);
-      // setExperimentPast(req.params.id, req.params.outcome);
+      // setExperimentPast(req.params.id, req.params.outcome, "merged");
       console.log("Merging experiment " + docs[0]["info"]["title"]);
   });
   res.end();
@@ -164,22 +164,32 @@ app.get('/api/run/experiment/:id', (req, res) => {
 });
 
 function setExperimentRunning(id) {
-  expDB.update({id: id},
-   { $set: {
+  let date = new Date().toJSON();
+  expDB.update({id: id},{
+    $set: {
      "status.type": "running",
-     "time.started": new Date().toJSON()
-   } }, {}, () => {});
+     "time.started": date
+    },
+    $push: { "logs": {
+     "date": date,
+     "message": "started"
+    }}}, {}, () => {});
   expDB.persistence.compactDatafile();
   console.log("Experiment set to \"running\"");
 }
 
-function setExperimentPast(id, outcome) {
-  expDB.update({id: id},
-   { $set: {
-     "status.type": "past",
-     "status.outcome": outcome,
-     "time.stopped": new Date().toJSON()
-   } }, {}, () => {});
+function setExperimentPast(id, outcome, action) {
+  let date = new Date().toJSON();
+  expDB.update({id: id}, {
+    $set: {
+       "status.type": "past",
+       "status.outcome": outcome,
+       "time.stopped": date
+     },
+     $push: { "logs": {
+      "date": date,
+      "message": action
+     }}}, {}, () => {});
   expDB.persistence.compactDatafile();
   console.log("Experiment set to \"stopped\"");
 }
@@ -278,7 +288,16 @@ app.get('/api/data/experiment/:id', (req, res) => {
 
 // postExperiment(exp)
 app.post('/api/data/experiment', (req, res) => {
-  expDB.update({ id: req.body.id }, req.body, { upsert:true }, ()=>{});
+  expDB.update({ id: req.body.id }, req.body, {
+    upsert:true
+  }, (e, n, a, upsert)=>{
+    expDB.update({ id: req.body.id }, {
+      $push: { "logs": {
+        "date": new Date().toJSON(),
+        "message": (upsert) ? "created" : "edited"
+    }}}, {}, ()=>{});
+  });
+
   expDB.persistence.compactDatafile();
   res.end();
 });

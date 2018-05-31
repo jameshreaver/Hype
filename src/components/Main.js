@@ -4,7 +4,7 @@ import Endof from './main/Endof';
 import Metrics from './main/Metrics';
 import Overview from './main/Overview';
 import Hypothesis from './main/Hypothesis';
-import Rules from './main/Rules';
+import Logs from './main/Logs';
 import * as util from '../util/utils';
 import * as api from '../api/api';
 
@@ -164,7 +164,7 @@ class Main extends Component {
           <h2 className="header-spaced">Experiment Details</h2>
           <section className="row">
             <Hypothesis experiment={exp} toggleEdit={this.props.toggleEdit}/>
-            <Rules experiment={exp} toggleEdit={this.props.toggleEdit}/>
+            <Logs experiment={exp}/>
           </section>
         </div>
         <div>
