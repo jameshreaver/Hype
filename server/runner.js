@@ -1,5 +1,6 @@
 const api = require('./api');
 const logger = require('./logger');
+const gapi = require('./origins/gapi');
 const k8s = require('./origins/k8s');
 
 const registryURL = "gcr.io/booksnap-h/";
@@ -10,8 +11,7 @@ function runExperiment(req, res, db) {
     let info = getInfo(exp);
     ensureAffinity(info.service);
     // logger.setRunning(db, info.id);
-    // postTriggers(info);
-    // postBuilds(info).then(
+    gapi.createBuilds(info);
     createDeployments(info);
     console.log("Running experiment "
       + exp["info"]["title"]
@@ -79,14 +79,14 @@ function createDeployments(info) {
 
 function createMainDeployment(info, config) {
   let name = info["service"] +"-"+ info["main-branch"];
-  let image = registryURL + name + ":4429d33";
+  let image = "building"
   let replicas = 10-info["replicas"];
   createDeployment(name, image, replicas, config);
 }
 
 function createExpDeployment(info, config) {
   let name = info["service"] +"-"+ info["exp-branch"];
-  let image = registryURL + name + ":dec988c";
+  let image = "building"
   let replicas = info["replicas"];
   createDeployment(name, image, replicas, config);
 }
@@ -96,6 +96,7 @@ function createDeployment(name, image, replicas, config) {
   conf.metadata.name = name;
   conf.metadata.resourceVersion = '';
   conf.spec.replicas = replicas;
+  conf.spec.template.spec.containers[0].name = name;
   if (image) conf.spec.template.spec.containers[0].image = image;
   conf.spec.template.spec.containers[0].imagePullPolicy = "Always";
   k8s.createDeployment(conf);
