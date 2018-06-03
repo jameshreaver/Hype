@@ -1,24 +1,28 @@
 "use strict"
 
-const express = require('express');
 const {google} = require('googleapis');
+const database = require('nedb');
 const opn = require('opn');
 
 const projectID = "booksnap-h";
-const authHost = "http://localhost:5101/";
 const scope = "https://www.googleapis.com/auth/cloud-platform";
 const oauth2Client = new google.auth.OAuth2(
   "921143521906-8q9p0pdo9lpr3uusnt24b2ab3moc23jt.apps.googleusercontent.com",
   "U1hNde536_p7RB-xn9YVIS3D",
-  authHost + "api/auth"
+  "http://localhost:5000/api/auth"
 );
 
 const cloudbuild = google.cloudbuild('v1');
 const container = google.container('v1');
 google.options({ auth: oauth2Client });
-var client = authenticate();
+var client;
 
-async function getCluster() {
+var cdb = new database({
+  filename: './db/config.db',
+  autoload: true
+});
+
+function getCluster() {
   const params = { projectId: projectID, zone: "-" };
   return container.projects.zones.clusters.list(params);
 }
@@ -43,29 +47,35 @@ function deleteTrigger(id) {
   return cloudbuild.projects.triggers.delete(params);
 }
 
-async function authenticate() {
-  oauth2Client.credentials = { access_token: 'ya29.GlzOBbOeM9pcOredUf1CNQH4Lv7NnTWi10RbBTRLiPEEmUMj_Jfc2tSo66jSHM1L7sApddKpZO4GeA9hbZuzSc2jwq4D-Ci1e6ESGOWbSqJ_XzI8qXC9Rrr1yx9Sng',token_type: 'Bearer',expiry_date: 1527986520357 };
-return;
-  return new Promise((resolve, reject) => {
-    const server = express();
-    const authorizeUrl = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: scope
-    });
-    server.get('/api/auth', async (req, res) => {
-      try {
-        res.end("Authentication successful!");
-        const {tokens} = await oauth2Client
-        .getToken(req.query.code);
-        console.log(tokens);
-        oauth2Client.credentials = tokens;
-        resolve(oauth2Client);
-      } catch (e) {
-        reject(e);
-    }}).listen(5101, function() {
-      opn(authorizeUrl, {wait: false})
-      .then(cp => cp.unref());
-    });
+function authenticate(req, res) {
+  client = new Promise(async (resolve, reject) => {
+    try {
+      res.end("Authentication successful!");
+      const {tokens} = await oauth2Client
+      .getToken(req.query.code);
+      oauth2Client.setCredentials(tokens);
+      cdb.update({ type: "auth" }, {
+        type: "auth",
+        data: tokens
+      }, { upsert: true }, () => {});
+      cdb.persistence.compactDatafile();
+      resolve(oauth2Client);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function setupOAuth(){
+  cdb.findOne({type: "auth"}).exec((err, doc) => {
+    if (!doc || doc.data.expiry_date < new Date()) {
+      let url = oauth2Client.generateAuthUrl({
+        access_type: 'offline', scope: scope
+      });
+      opn(url, {wait: false}).then(cp => cp.unref());
+    } else {
+      oauth2Client.setCredentials(doc.data);
+    }
   });
 }
 
@@ -81,5 +91,7 @@ module.exports = {
   getCluster,
   createBuild,
   createTrigger,
-  deleteTrigger
+  deleteTrigger,
+  authenticate,
+  setupOAuth
 }

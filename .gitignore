@@ -7,6 +7,9 @@
 # production
 /build
 
+# data
+/server/db
+
 # misc
 .DS_Store
 .env.local

@@ -12,17 +12,24 @@ const k8s = require('./origins/k8s');
 const git = require('./origins/git');
 const mcs = require('./origins/mcs');
 const data= require('./origins/data');
+const gapi= require('./origins/gapi');
 
 const app = express();
 const port = process.env.PORT || 5100;
 app.use(bodyParser.json())
 app.listen(port);
+gapi.setupOAuth();
 
 var db = new database({
   filename: './db/experiments.db',
   autoload: true
 });
 
+
+// AUTHENTICATE
+app.get('/api/auth', (req, res) => {
+  gapi.authenticate(req, res);
+});
 
 // GET /SERVICES
 app.get('/api/k8s/services/', (req, res) => {
