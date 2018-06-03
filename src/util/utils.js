@@ -29,8 +29,8 @@ export function renderUnit(unit) {
 }
 
 export function processMetrics(exp, data) {
-  return exp.metrics.map(m => {
-    return processMetric(m, exp, data)
+  return exp.metrics.map(metric => {
+    return processMetric(metric, exp, data)
   });
 };
 
@@ -46,10 +46,34 @@ function processMetric(m, exp, data) {
       datasetB: [],
       totalA: "-",
       totalB: "-",
+      weightedA: "-",
+      weightedB: "-",
       value: "-",
       status: false
     }
   }
+  let agg = aggregateMetrics(metric, exp);
+  let perc = parseFloat(exp["settings"]["percentage"]);
+  let totalA = agg.datasetA.reduce((x, y) => x + y, 0);
+  let totalB = agg.datasetB.reduce((x, y) => x + y, 0);
+  let weightedA = (perc) ? (totalA * 50)/perc : 0;
+  let weightedB = (perc !== 100) ? (totalB * 50)/(100-perc) : 0;
+  let value = processValue(m["unit"], weightedA, weightedB);
+  let status = getMetricStatus(m["change"], m["value"], value);
+  return {
+    labels: agg.labels,
+    datasetA: agg.datasetA,
+    datasetB: agg.datasetB,
+    totalA: totalA,
+    totalB: totalB,
+    weightedA: weightedA,
+    weightedB: weightedB,
+    value: value,
+    status: status
+  }
+}
+
+function aggregateMetrics(metric, exp) {
   let labels = [];
   let datasetA = [];
   let datasetB = [];
@@ -69,18 +93,19 @@ function processMetric(m, exp, data) {
       datasetB.push(0);
     }
   }
-  let totalA = datasetA.reduce((x, y) => x + y, 0);
-  let totalB = datasetB.reduce((x, y) => x + y, 0);
-  let value = ((totalB - totalA)*100/totalA).toFixed(2);
-  let status = getMetricStatus(m["change"], m["value"], value);
   return {
     labels: labels,
     datasetA: datasetA,
-    datasetB: datasetB,
-    totalA: totalA,
-    totalB: totalB,
-    value: value,
-    status: status
+    datasetB: datasetB
+  }
+}
+
+function processValue(unit, a, b) {
+  let diff = b - a;
+  switch(unit) {
+    case "percentage": return diff*100/(a ? a : diff);
+    case "magnitude" : return diff;
+    default: return diff;
   }
 }
 

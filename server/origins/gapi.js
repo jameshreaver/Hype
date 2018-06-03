@@ -9,7 +9,7 @@ const scope = "https://www.googleapis.com/auth/cloud-platform";
 const oauth2Client = new google.auth.OAuth2(
   "921143521906-8q9p0pdo9lpr3uusnt24b2ab3moc23jt.apps.googleusercontent.com",
   "U1hNde536_p7RB-xn9YVIS3D",
-  "http://localhost:5000/api/auth"
+  "http://hype.software/api/auth"
 );
 
 const cloudbuild = google.cloudbuild('v1');

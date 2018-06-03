@@ -86,7 +86,7 @@ class Info extends Component {
               </select>
             </div>
             <div className="col-sm-2 card-subtext">
-              <input type="text" className="form-control" name="value" value={ms[i].value} onChange={(e)=>{this.handleChange(e,i)}} placeholder="value"/>
+              <input type="number" className="form-control" name="value" min="0" value={ms[i].value} onChange={(e)=>{this.handleChange(e,i)}} placeholder="value"/>
             </div>
             <div className="col-sm-2 card-subtext">
               <select className="form-control" name="unit" value={ms[i].unit} onChange={(e)=>{this.handleChange(e,i)}}>

@@ -3,26 +3,6 @@ import * as util from '../../util/utils';
 
 class Overview extends Component {
 
-  randomNumber(min, max, top) {
-    if (this.props.experiment["status"]["type"] === "planned") {
-      return (
-        <div className="progress-bar bg-warning no-transition" role="progressbar" style={{width:"0%"}}></div>
-      );
-    }
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    let rand = Math.random();
-    let val = Math.floor(rand * (max - min)) + min;
-    let dVal = val*top/100;
-    let cls = "bg-warning";
-    if (rand > 0.70) {
-      cls = "bg-success";
-    }
-    return (
-      <div className={"progress-bar "+cls} role="progressbar" style={{width:val+"%"}}>{dVal+"/"+top}</div>
-    );
-  }
-
   renderProgressBar(exp) {
     switch (exp["status"]["type"]) {
       case "planned":
@@ -51,7 +31,7 @@ class Overview extends Component {
     let a = (change === ">-" || change === "<+") ? 3*value : -value;
     let percentage = (x-a)*100/(value-a);
     percentage = Math.max(Math.min(percentage, 100), 0);
-    return percentage.toFixed(2);
+    return percentage;
   }
 
   renderKeyMetric(outcome, i) {
@@ -71,7 +51,7 @@ class Overview extends Component {
           </div>
           <div className="col-sm-9">
             <div className="progress progress-metric">
-              <div className={"progress-bar "+bg} role="progressbar" style={{width:perc+"%"}}>
+              <div className={"progress-bar "+bg} role="progressbar" style={{width:perc.toFixed(2)+"%"}}>
                 {outcome["result"]+unit+" ("+outcome["change"]+outcome["value"]+unit+")"}
               </div>
             </div>
@@ -114,11 +94,11 @@ class Overview extends Component {
                   <div className="col-sm-4 text-center">
                     <div className="text-center">
                       <span className="routing-percentages">
-                        {100-exp["settings"]["percentage"]}%
+                        {exp["settings"]["percentage"]}%
                       </span>
                       <span className="routing-spaced"/>
                       <span className="routing-percentages">
-                        {exp["settings"]["percentage"]}%
+                        {100-exp["settings"]["percentage"]}%
                       </span>
                     </div>
                   </div>

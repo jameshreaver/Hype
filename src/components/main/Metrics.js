@@ -59,10 +59,10 @@ class Metrics extends Component {
          <section className="row">
             <div className="col-sm-3">
               <div className="card-subtext">
-                Total {m["type"]+"s"} (version A): {data["totalA"]}
+                Total {m["type"]+"s"} (version A): {data["totalA"]} ({Math.round(data["weightedA"])})
               </div>
               <div className="card-subtext">
-                Total {m["type"]+"s"} (version B): {data["totalB"]}
+                Total {m["type"]+"s"} (version B): {data["totalB"]} ({Math.round(data["weightedB"])})
               </div>
             </div>
             <div className="col-sm-2">
@@ -70,7 +70,7 @@ class Metrics extends Component {
                 Current change:
               </div>
               <div className="">
-                {data["value"]+unit}
+                {parseFloat(data["value"]).toFixed(2)+unit}
               </div>
             </div>
             <div className="col-sm-2">
@@ -88,8 +88,8 @@ class Metrics extends Component {
               {this.renderMetricStatus(data["status"])}
             </div>
           </section>
-          <div style={{"maxHeight": "160px"}}>
-            <Line data={graphData} options={{responsive: true, maintainAspectRatio: false}} width="100%" height="160px"/>
+          <div className="metrics-graph">
+            <Line className="metrics-line" data={graphData} options={{responsive: true, maintainAspectRatio: false}}/>
           </div>
         </div>
       </div>

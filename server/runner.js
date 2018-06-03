@@ -89,14 +89,14 @@ function createDeployments(info) {
 function createMainDeployment(info, config) {
   let name = info["service"] +"-"+ info["main-branch"];
   let image = "building"
-  let replicas = 10-info["replicas"];
+  let replicas = info["replicas"];
   createDeployment(name, image, replicas, config);
 }
 
 function createExpDeployment(info, config) {
   let name = info["service"] +"-"+ info["exp-branch"];
   let image = "building"
-  let replicas = info["replicas"];
+  let replicas = 10-info["replicas"];
   createDeployment(name, image, replicas, config);
 }
 
