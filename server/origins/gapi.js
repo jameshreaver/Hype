@@ -23,16 +23,11 @@ async function getCluster() {
   return container.projects.zones.clusters.list(params);
 }
 
-async function createBuilds(info) {
-  getCluster().then(async res => {
-    let cluster = res.data["clusters"][0];
-    let triggerA = getTrigger(info, info["main-branch"], cluster);
-    let triggerB = getTrigger(info, info["exp-branch"], cluster);
-    createBuild(triggerA.build);
-    createBuild(triggerB.build);
-    createTrigger(triggerA);
-    createTrigger(triggerB);
-  });
+function createBuild(build) {
+  console.log("* Started build on branch "
+    + build.source.repoSource.branchName);
+  const params = { projectId: projectID, resource: build };
+  return cloudbuild.projects.builds.create(params);
 }
 
 function createTrigger(trigger) {
@@ -42,65 +37,15 @@ function createTrigger(trigger) {
   return cloudbuild.projects.triggers.create(params);
 }
 
-function createBuild(build) {
-  console.log("* Started build on branch "
-    + build.source.repoSource.branchName);
-  const params = { projectId: projectID, resource: build };
-  return cloudbuild.projects.builds.create(params);
+function deleteTrigger(id) {
+  console.log("* Deleted trigger with id " + id);
+  const params = { projectId: projectID, triggerId: id };
+  return cloudbuild.projects.triggers.delete(params);
 }
-
-function getTrigger(info, branch, cluster) {
-  let repoSource = {
-    "projectId": projectID,
-    "repoName": info["service"],
-    "branchName": branch};
-  let container = info["service"]
-    + "-" + branch;
-  let substitutions = {
-    "_NAME": info["service"],
-    "_CONTAINER": container,
-    "_CLUSTER": cluster.name,
-    "_ZONE": cluster.zone,
-    "_HYPE_EXP_ID": info["id"],
-    "_HYPE_EXP_VERS": branch};
-  return {
-    "triggerTemplate": repoSource,
-    "substitutions": substitutions,
-    "build": {
-      "source": {"repoSource": repoSource},
-      "steps": steps,
-      "substitutions": substitutions,
-      "images" : ["gcr.io/$PROJECT_ID/"
-      + "$_NAME-$BRANCH_NAME:$SHORT_SHA"]
-    }
-  };
-}
-
-const steps = [
-  {
-    "name": "gcr.io/cloud-builders/npm",
-    "args": ["install", "--silent"]
-  }, {
-    "name": "gcr.io/cloud-builders/npm",
-    "args": ["run", "build", "--silent"],
-    "env": ["REACT_APP_HYPE_EXP_ID=$_HYPE_EXP_ID",
-            "REACT_APP_HYPE_EXP_VERS=$_HYPE_EXP_VERS"]
-  }, {
-    "name": "gcr.io/cloud-builders/docker",
-    "args": ["build", "-t", "gcr.io/$PROJECT_ID/$_NAME-$BRANCH_NAME:$SHORT_SHA", "."]
-  }, {
-    "name": "gcr.io/cloud-builders/docker",
-    "args": ["push", "gcr.io/$PROJECT_ID/$_NAME-$BRANCH_NAME:$SHORT_SHA"]
-  },{
-    "name": "gcr.io/cloud-builders/kubectl",
-    "args": ["set", "image", "deployment/$_NAME-$BRANCH_NAME",
-    "$_CONTAINER=gcr.io/$PROJECT_ID/$_NAME-$BRANCH_NAME:$SHORT_SHA"],
-    "env": ["CLOUDSDK_COMPUTE_ZONE=$_ZONE",
-            "CLOUDSDK_CONTAINER_CLUSTER=$_CLUSTER"]
-  }
-];
 
 async function authenticate() {
+  oauth2Client.credentials = { access_token: 'ya29.GlzOBbOeM9pcOredUf1CNQH4Lv7NnTWi10RbBTRLiPEEmUMj_Jfc2tSo66jSHM1L7sApddKpZO4GeA9hbZuzSc2jwq4D-Ci1e6ESGOWbSqJ_XzI8qXC9Rrr1yx9Sng',token_type: 'Bearer',expiry_date: 1527986520357 };
+return;
   return new Promise((resolve, reject) => {
     const server = express();
     const authorizeUrl = oauth2Client.generateAuthUrl({
@@ -133,5 +78,8 @@ oauth2Client.on('tokens', (tokens) => {
 });
 
 module.exports = {
-  createBuilds
+  getCluster,
+  createBuild,
+  createTrigger,
+  deleteTrigger
 }
