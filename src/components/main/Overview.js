@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import * as util from '../../util/utils';
+import { computePercentage } from '../../util/compute';
+import * as render from '../../util/render';
+
 
 class Overview extends Component {
 
@@ -10,7 +12,7 @@ class Overview extends Component {
           <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:"0%"}}></div>
         );
       case "running":
-        let perc = util.computePercentage(exp);
+        let perc = computePercentage(exp);
         return (
           <div className="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style={{width:perc.toString()+"%"}}>{perc}%</div>
         );
@@ -35,7 +37,7 @@ class Overview extends Component {
   }
 
   renderKeyMetric(outcome, i) {
-    let unit = util.renderUnit(outcome["unit"]);
+    let unit = render.renderUnit(outcome["unit"]);
     let perc = this.computeMetricPercentage(outcome);
     let bg = "bg-success";
     if (perc < 50) {
@@ -47,12 +49,12 @@ class Overview extends Component {
       <li key={i} className="list-group-item">
         <div className="row">
           <div className="col-sm-3 card-subtext">
-            #{i+1} {outcome["type"]+"s"}
+            #{i+1} {render.renderType(outcome["type"])}
           </div>
           <div className="col-sm-9">
             <div className="progress progress-metric">
-              <div className={"progress-bar "+bg} role="progressbar" style={{width:perc.toFixed(2)+"%"}}>
-                {outcome["result"]+unit+" ("+outcome["change"]+outcome["value"]+unit+")"}
+              <div className={"progress-bar "+bg} role="progressbar" style={{width:perc+"%"}}>
+                {render.renderValue(outcome["result"], unit)+" ("+outcome["change"]+outcome["value"]+unit+")"}
               </div>
             </div>
           </div>

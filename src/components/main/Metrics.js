@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs';
-import { renderUnit } from '../../util/utils';
+import * as render from '../../util/render';
 
 
 class Metrics extends Component {
@@ -31,6 +31,27 @@ class Metrics extends Component {
     }
   }
 
+  renderGraph(data) {
+    if (!data["labels"].length) {
+      return;
+    };
+    let graphData = this.getGraphData(
+      data["labels"],
+      data["datasetA"],
+      data["datasetB"]
+    );
+    return (
+      <div className="metrics-graph">
+        <Line className="metrics-line"
+         data={graphData}
+         options={{
+          responsive: true,
+          maintainAspectRatio: false
+        }}/>
+      </div>
+    );
+  }
+
   renderMetricStatus(status) {
     return (status) ? (
       <div className="metrics-fulfilled">
@@ -42,15 +63,22 @@ class Metrics extends Component {
     )
   }
 
+  renderWeighted(value) {
+    return (value === "-") ? "" : "(" + value.toFixed(2) + ")";
+  }
+
+  renderTotal(value) {
+    return (value === "-") ? value : value.toFixed(2);
+  }
+
   renderMetric(m, data, i) {
-    let unit = renderUnit(m["unit"]);
-    let graphData = this.getGraphData(
-      data["labels"], data["datasetA"], data["datasetB"]);
+    let unit = render.renderUnit(m["unit"]);
+    let type = render.renderType(m["type"]);
     return (
       <div key={i}>
         <p>
           <i className={"fa metrics-icon " + ((data["status"]) ? "fa-check-circle success" : "fa-minus-circle")}/>
-          Number of <strong>{m["type"]+"s"}</strong> on element "<a className="monospace">{m["elem"]}</a>".
+          <strong>{type}</strong> on element "<a className="monospace">{m["elem"]}</a>".
           <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.props.toggleEdit}>
             Edit
           </button>
@@ -59,10 +87,12 @@ class Metrics extends Component {
          <section className="row">
             <div className="col-sm-3">
               <div className="card-subtext">
-                Total {m["type"]+"s"} (version A): {data["totalA"]} ({Math.round(data["weightedA"])})
+                Total {type} (version A): {this.renderTotal(data["totalA"])}
+                {" "+this.renderWeighted(data["weightedA"])}
               </div>
               <div className="card-subtext">
-                Total {m["type"]+"s"} (version B): {data["totalB"]} ({Math.round(data["weightedB"])})
+                Total {type} (version B): {this.renderTotal(data["totalB"])}
+                {" "+this.renderWeighted(data["weightedB"])}
               </div>
             </div>
             <div className="col-sm-2">
@@ -70,7 +100,7 @@ class Metrics extends Component {
                 Current change:
               </div>
               <div className="">
-                {parseFloat(data["value"]).toFixed(2)+unit}
+                {render.renderValue(data["value"], unit)}
               </div>
             </div>
             <div className="col-sm-2">
@@ -88,9 +118,7 @@ class Metrics extends Component {
               {this.renderMetricStatus(data["status"])}
             </div>
           </section>
-          <div className="metrics-graph">
-            <Line className="metrics-line" data={graphData} options={{responsive: true, maintainAspectRatio: false}}/>
-          </div>
+          {this.renderGraph(data)}
         </div>
       </div>
     );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { computePercentage } from '../util/utils';
+import { computePercentage } from '../util/compute';
 import { getExperiments } from '../api/api';
 
 class Sidebar extends Component {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { computeUntilDate } from '../../util/utils';
+import { computeUntilDate } from '../../util/compute';
 
 class Info extends Component {
 

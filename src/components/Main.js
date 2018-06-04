@@ -5,7 +5,9 @@ import Metrics from './main/Metrics';
 import Overview from './main/Overview';
 import Hypothesis from './main/Hypothesis';
 import Logs from './main/Logs';
-import * as util from '../util/utils';
+
+import { processMetrics } from '../util/process';
+import * as compute from '../util/compute';
 import * as api from '../api/api';
 
 
@@ -17,7 +19,7 @@ class Main extends Component {
     this.updateMetrics(exp);
     this.setInterval(exp);
     this.state = {
-      metrics: util.processMetrics(exp, []),
+      metrics: processMetrics(exp, []),
       preparing: false
     };
   }
@@ -27,7 +29,7 @@ class Main extends Component {
     this.updateMetrics(exp);
     this.setInterval(exp);
     this.setState({
-      metrics: util.processMetrics(exp, []),
+      metrics: processMetrics(exp, []),
       preparing: false
     });
   }
@@ -41,7 +43,7 @@ class Main extends Component {
   setInterval(exp) {
     if (this.interval) clearInterval(this.interval);
     if (exp["status"]["type"] === "running"
-     && util.computePercentage(exp) < 100) {
+     && compute.computePercentage(exp) < 100) {
        this.interval = setInterval(() => {
          this.updateMetrics()
        }, 5000);
@@ -52,7 +54,7 @@ class Main extends Component {
     api.getMetrics(exp["id"])
       .then(data => {
         this.setState({...this.state,
-          metrics: util.processMetrics(exp, data)
+          metrics: processMetrics(exp, data)
         });
       }).catch(err =>
         console.log(err));
@@ -107,7 +109,7 @@ class Main extends Component {
 
   renderHeader() {
     let exp = this.props.experiment;
-    let date = util.computeUntilDate(exp).toLocaleDateString('en-GB', {
+    let date = compute.computeUntilDate(exp).toLocaleDateString('en-GB', {
       day:'numeric', month:'long', year:'numeric'
     });
     switch (exp["status"]["type"]) {
@@ -125,7 +127,7 @@ class Main extends Component {
         ) ;
       case "running":
         return (
-          <h1 className="pull-right">{util.computePercentage(exp)}%
+          <h1 className="pull-right">{compute.computePercentage(exp)}%
             <span className="main-light"> until {date}</span>
           </h1>
         );
@@ -139,7 +141,7 @@ class Main extends Component {
   renderEndOfExperiment(outcomes) {
     let exp = this.props.experiment;
     if (exp["status"]["type"] === "running"
-      && util.computeUntilDate(exp) < new Date()) {
+      && compute.computeUntilDate(exp) < new Date()) {
       return (
         <section className="row">
           <Endof experiment={exp} outcomes={outcomes} toggleEdit={this.props.toggleEdit}/>

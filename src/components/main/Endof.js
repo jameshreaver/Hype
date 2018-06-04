@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { renderUnit } from '../../util/utils';
+import * as render from '../../util/render';
 import * as api from '../../api/api';
 
 
@@ -46,12 +46,13 @@ class Endof extends Component {
 
   renderKeyMetrics(outcomes) {
     return outcomes.map((o, i) => {
-      let unit = renderUnit(o["unit"]);
+      let unit = render.renderUnit(o["unit"]);
+      let type = render.renderType(o["type"]);
       let icon = (o["status"]) ? "fa-check" : "fa-times";
       return (
         <span key={i}>
           <i className={"fa metrics-icon " + icon}/>
-          Number of <strong>{o["type"]+"s"}</strong> on element "<a className="monospace">{o["elem"]}</a>" (<a className="card-subtext">{o["result"]+unit}</a>)
+          <strong>{type}</strong> on element "<a className="monospace">{o["elem"]}</a>" (<a className="card-subtext">{render.renderValue(o["result"], unit)}</a>)
           <br/>
         </span>
       )

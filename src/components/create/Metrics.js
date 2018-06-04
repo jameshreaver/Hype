@@ -68,10 +68,12 @@ class Info extends Component {
                 <option disabled></option>
                 <option value="click">Click</option>
                 <option value="pageview">Page view</option>
+                <option value="clicksvisit">Clicks per visit</option>
+                <option value="conversion">Conversion rate</option>
               </select>
             </div>
             <div className="col-sm-2 card-subtext">
-              <input type="text" className="form-control" name="elem" value={ms[i].elem} onChange={(e)=>{this.handleChange(e,i)}} placeholder="Element ID"/>
+              <input type="text" className="form-control" name="elem" value={ms[i].elem} onChange={(e)=>{this.handleChange(e,i)}}/>
             </div>
             <div className="col-sm-1 custom-control custom-checkbox">
               <input type="checkbox" className="create-checkbox" name="key" checked={ms[i].key} onChange={(e)=>{this.handleChange(e,i)}}/>
@@ -121,10 +123,10 @@ class Info extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-2 card-subtext">
-                    Type
+                    Metric Type
                   </div>
                   <div className="col-sm-2 card-subtext">
-                    Element
+                    on Element
                   </div>
                   <div className="col-sm-1   card-subtext">
                     Key
