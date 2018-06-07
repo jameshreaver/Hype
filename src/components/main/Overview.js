@@ -29,6 +29,7 @@ class Overview extends Component {
     let change = metric["change"];
     let result = metric["result"];
     let value = metric["value"];
+    if (result === "-") return 0;
     let x = (change === ">-" || change === "-") ? -result : result;
     let a = (change === ">-" || change === "<+") ? 3*value : -value;
     let percentage = (x-a)*100/(value-a);
@@ -54,7 +55,7 @@ class Overview extends Component {
           <div className="col-sm-9">
             <div className="progress progress-metric">
               <div className={"progress-bar "+bg} role="progressbar" style={{width:perc+"%"}}>
-                {render.renderValue(outcome["result"], unit)+" ("+outcome["change"]+outcome["value"]+unit+")"}
+                {(perc) ? render.renderValue(outcome["result"], unit)+" ("+outcome["change"]+outcome["value"]+unit+")" : ""}
               </div>
             </div>
           </div>
