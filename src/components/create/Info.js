@@ -67,6 +67,11 @@ class Info extends Component {
     )});
   }
 
+  renderDuration = () => {
+    return Array.from(new Array(10),(val,i) =>
+      <option value={i+1}>{i+1}</option>
+    );
+  }
 
   render() {
     return (
@@ -108,12 +113,7 @@ class Info extends Component {
                   <div className="col-sm-3">
                     <select className="form-control" name="duration" onChange={this.handleChange} value={this.state.duration}>
                       <option disabled></option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
+                      {this.renderDuration()}
                     </select>
                   </div>
                   <div className="col-sm-6">
