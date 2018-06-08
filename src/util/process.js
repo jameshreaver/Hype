@@ -22,8 +22,8 @@ function processMetric(m, exp, data) {
 
 function processAverageMetric(m, metric, exp) {
   let agg = aggregateAverageMetric(metric, exp);
-  let totalA = sum(agg.valuesA)/sum(agg.countsA);
-  let totalB = sum(agg.valuesB)/sum(agg.countsB);
+  let totalA = processAverage(agg.valuesA, agg.countsA);
+  let totalB = processAverage(agg.valuesB, agg.countsB);
   let value = processValue(m["unit"], totalA, totalB);
   let status = processMetricStatus(m["change"], m["value"], value);
   return {
@@ -136,6 +136,13 @@ function processWeighted(total, perc) {
 
 function sum(array) {
   return array.reduce((x, y) => x + y, 0);
+}
+
+function processAverage(values, counts) {
+  let sumCounts = sum(counts);
+  if (sumCounts === 0) return 0;
+  let sumValues = sum(values);
+  return sumValues/sumCounts;
 }
 
 function processMetricStatus(change, expected, current) {
