@@ -132,7 +132,7 @@ class Info extends Component {
                     Service
                   </div>
                   <div className="col-sm-9">
-                    <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange}>
+                    <select className="form-control" name="service" value={this.state["service"]} onChange={this.handleChange}>
                       <option disabled></option>
                       {this.renderServices()}
                     </select>
