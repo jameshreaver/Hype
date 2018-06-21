@@ -16,8 +16,8 @@ function runExperiment(req, res, db) {
   db.findOne({id: req.params.id}, {})
   .exec(function (err, exp) {
     let info = getInfo(exp);
-    ensureAffinity(info.service);
-    // logger.setRunning(db, info.id);
+    // ensureAffinity(info.service);
+    logger.setRunning(db, info.id);
     createBuilds(info);
     createDeployments(info);
     console.log("Running experiment "
@@ -31,8 +31,8 @@ function endExperiment(req, res, db) {
   db.findOne({id: req.params.id}, {})
   .exec(function (err, exp) {
     let info = getInfo(exp);
-    let outocme = req.params.outcome;
-    // logger.setPast(db, info.id, outcome, "ended");
+    let outcome = req.params.outcome;
+    logger.setPast(db, info.id, outcome, "ended");
     endDeployments(info, info["main-branch"]);
     console.log("Ending experiment "
       + exp["info"]["title"]
@@ -45,7 +45,8 @@ function mergeExperiment(req, res, db) {
   db.findOne({id: req.params.id}, {})
   .exec(function (err, exp) {
     let info = getInfo(exp);
-    // logger.setPast(db, info.id, outcome, "merged");
+    let outcome = req.params.outcome;
+    logger.setPast(db, info.id, outcome, "merged");
     endDeployments(info, info["exp-branch"]);
     console.log("Meging experiment "
       + exp["info"]["title"]
@@ -80,7 +81,6 @@ function createDeployments(info) {
     createMainDeployment(info, config);
     createExpDeployment(info, config);
     k8s.deleteDeployment(name);
-    deleteTriggers(info["id"]);
   }).catch(err =>
     console.log(err)
   );
@@ -116,10 +116,10 @@ function createBuilds(info) {
     let cluster = res.data["clusters"][0];
     let triggerA = getTrigger(info, info["main-branch"], cluster);
     let triggerB = getTrigger(info, info["exp-branch"], cluster);
-    gapi.createTrigger(triggerA).then(res => {
-      saveTriggerId(info["id"], res.data.id)});
-    gapi.createTrigger(triggerB).then(res => {
-      saveTriggerId(info["id"], res.data.id)});
+    //gapi.createTrigger(triggerA).then(res => {
+    //  saveTriggerId(info["id"], res.data.id)});
+    //gapi.createTrigger(triggerB).then(res => {
+    //  saveTriggerId(info["id"], res.data.id)});
     gapi.createBuild(triggerA.build);
     gapi.createBuild(triggerB.build);
   });

@@ -1,6 +1,6 @@
 const api = require('../api');
 
-const metricsHost = "http://localhost:4888/";
+const metricsHost = "http://35.241.24.11/";
 
 function getMetrics(req, res) {
   api.GET(metricsHost + req.params.id)
