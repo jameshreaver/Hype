@@ -2,16 +2,12 @@ import React, { Component } from 'react';
 
 class Header extends Component {
 
-  data = {
-    "app-name": "BookSnap"
-  }
-
   render() {
     return (
       <header>
         <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
           <a className="navbar-brand" href="/">
-            <i className="fa fa-universal-access fa-spin fa-fw"></i> <strong>Hype</strong> for {this.data["app-name"]}
+            <i className="fa fa-universal-access fa-spin fa-fw"></i> <strong>Hype</strong> for {this.props.app}
           </a>
           <button className="navbar-toggler d-lg-none" type="button">
           <span className="navbar-toggler-icon"></span>

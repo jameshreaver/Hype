@@ -1,5 +1,15 @@
 const logger = require('../logger');
 
+function getApplication(req, res, cdb) {
+  cdb.findOne({
+    type: "info"
+  }).exec((err, doc) => {
+    res.send({
+      "app": doc.data["app-name"]
+    });
+  });
+}
+
 function getExperiments(req, res, db) {
   db.find({}, {id: 1, _id: 0, status :1,
     "info.title": 1,
@@ -36,6 +46,7 @@ function postExperiment(req, res, db) {
 }
 
 module.exports = {
+  getApplication,
   getExperiments,
   getExperiment,
   postExperiment

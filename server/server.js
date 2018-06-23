@@ -16,19 +16,27 @@ const gapi= require('./origins/gapi');
 
 const app = express();
 const port = process.env.PORT || 5100;
-app.use(bodyParser.json())
-app.listen(port);
-gapi.setupOAuth();
 
 var db = new database({
   filename: './db/experiments.db',
   autoload: true
 });
 
+var cdb = new database({
+  filename: './db/config.db',
+  autoload: true
+});
+
+app.use(bodyParser.json())
+app.listen(port);
+gapi.setupClient(cdb);
+runner.setProject(cdb);
+mcs.setMetricsHost(cdb);
+
 
 // AUTHENTICATE
 app.get('/api/auth', (req, res) => {
-  gapi.authenticate(req, res);
+  gapi.authenticate(req, res, cdb);
 });
 
 // GET /SERVICES
@@ -49,6 +57,11 @@ app.get('/api/git/branches/:owner/:repo', (req, res) => {
 // GET /METRICS
 app.get('/api/metrics/:id', (req, res) => {
   mcs.getMetrics(req, res);
+});
+
+// GET /APPLICATION
+app.get('/api/data/application/', (req, res) => {
+  data.getApplication(req, res, cdb);
 });
 
 // GET /EXPERIMENTS

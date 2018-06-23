@@ -8,7 +8,7 @@ class Landing extends Component {
       <main role="main" className="col-sm-9 ml-sm-auto col-md-10 pt-3">
         <h1 className="center">Welcome to Hype</h1>
         <div className="jumbotron">
-          <h1 className="display-4">Let us make BookSnap better.</h1>
+          <h1 className="display-4">Let us make {this.props.app} better.</h1>
           <p className="lead">Hype has been installed successfully.</p>
           <hr className="my-4"/>
           <p>Begin by setting up a new feature experiment or select an exiting experiment the sidebar. Your experiments are divided in three categories.<br/> "Planned Experiments" which are ready to run, "Running Experiments" and "Past Experiments", which have run either successfully or unsuccessfully.</p>
@@ -16,7 +16,7 @@ class Landing extends Component {
         <section className="row">
           <div className="col-sm-6">
             <div className="jumbotron">
-              <h5>Using Hype for BookSnap</h5>
+              <h5>Using Hype for {this.props.app}</h5>
               <p className="lead">Hype is a framework to run fast-paced feature experiments on your web application and validate them with tangible metrics.</p>
               <hr className="my-4"/>
               <section className="row">

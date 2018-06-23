@@ -4,19 +4,28 @@ const logger = require('./logger');
 const gapi = require('./origins/gapi');
 const k8s = require('./origins/k8s');
 
-const projectID = "booksnap-h";
-const registryURL = "gcr.io/booksnap-h/";
+var projectID = "";
 
 var tdb = new database({
   filename: './db/triggers.db',
   autoload: true
 });
 
+function setProject(cdb) {
+  cdb.findOne({
+    type: "info"
+  }).exec((err, doc) => {
+    let id = doc.data["project-id"];
+    gapi.setProjectID(id);
+    projectID = id;
+  });
+}
+
 function runExperiment(req, res, db) {
   db.findOne({id: req.params.id}, {})
   .exec(function (err, exp) {
     let info = getInfo(exp);
-    // ensureAffinity(info.service);
+    ensureAffinity(info.service);
     logger.setRunning(db, info.id);
     createBuilds(info);
     createDeployments(info);
@@ -48,7 +57,7 @@ function mergeExperiment(req, res, db) {
     let outcome = req.params.outcome;
     logger.setPast(db, info.id, outcome, "merged");
     endDeployments(info, info["exp-branch"]);
-    console.log("Meging experiment "
+    console.log("Merging experiment "
       + exp["info"]["title"]
     );
   });
@@ -116,10 +125,10 @@ function createBuilds(info) {
     let cluster = res.data["clusters"][0];
     let triggerA = getTrigger(info, info["main-branch"], cluster);
     let triggerB = getTrigger(info, info["exp-branch"], cluster);
-    //gapi.createTrigger(triggerA).then(res => {
-    //  saveTriggerId(info["id"], res.data.id)});
-    //gapi.createTrigger(triggerB).then(res => {
-    //  saveTriggerId(info["id"], res.data.id)});
+    gapi.createTrigger(triggerA).then(res => {
+      saveTriggerId(info["id"], res.data.id)});
+    gapi.createTrigger(triggerB).then(res => {
+      saveTriggerId(info["id"], res.data.id)});
     gapi.createBuild(triggerA.build);
     gapi.createBuild(triggerB.build);
   });
@@ -203,6 +212,7 @@ const steps = [
 ];
 
 module.exports = {
+  setProject,
   runExperiment,
   endExperiment,
   mergeExperiment

@@ -1,6 +1,14 @@
 const api = require('../api');
 
-const metricsHost = "http://35.241.24.11/";
+var metricsHost = "";
+
+function setMetricsHost(cdb) {
+  cdb.findOne({
+    type: "info"
+  }).exec((err, doc) => {
+    metricsHost = doc.data["metrics-host"];
+  });
+}
 
 function getMetrics(req, res) {
   api.GET(metricsHost + req.params.id)
@@ -13,5 +21,6 @@ function getMetrics(req, res) {
 }
 
 module.exports = {
+  setMetricsHost,
   getMetrics
 };

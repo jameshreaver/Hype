@@ -51,7 +51,7 @@ class Body extends Component {
   }
 
   render() {
-    let main = <Landing/>;
+    let main = <Landing app={this.props.app}/>;
     if (this.state.editing) {
       main = <Create experiment={this.state.experiment}/>;
     } else if (this.state.selected) {

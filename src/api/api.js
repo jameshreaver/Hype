@@ -17,6 +17,10 @@ async function postAPI (path, data) {
   });
 }
 
+export function getApplication() {
+  return getAPI('/data/application/');
+};
+
 export function getExperiments() {
   return getAPI('/data/experiments/');
 };

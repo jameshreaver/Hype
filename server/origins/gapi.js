@@ -4,23 +4,17 @@ const {google} = require('googleapis');
 const database = require('nedb');
 const opn = require('opn');
 
-const projectID = "booksnap-h";
+var projectID = "";
+var oauth2Client = {};
 const scope = "https://www.googleapis.com/auth/cloud-platform";
-const oauth2Client = new google.auth.OAuth2(
-  "921143521906-8q9p0pdo9lpr3uusnt24b2ab3moc23jt.apps.googleusercontent.com",
-  "U1hNde536_p7RB-xn9YVIS3D",
-  "http://hype.software/api/auth"
-);
 
 const cloudbuild = google.cloudbuild('v1');
 const container = google.container('v1');
-google.options({ auth: oauth2Client });
 var client;
 
-var cdb = new database({
-  filename: './db/config.db',
-  autoload: true
-});
+function setProjectID(id) {
+  projectID = id;
+}
 
 function getCluster() {
   const params = { projectId: projectID, zone: "-" };
@@ -47,7 +41,7 @@ function deleteTrigger(id) {
   return cloudbuild.projects.triggers.delete(params);
 }
 
-function authenticate(req, res) {
+function authenticate(req, res, cdb) {
   client = new Promise(async (resolve, reject) => {
     try {
       res.end("Authentication successful!");
@@ -66,7 +60,21 @@ function authenticate(req, res) {
   });
 }
 
-function setupOAuth(){
+function setupClient(cdb) {
+  cdb.findOne({
+    type: "config"
+  }).exec((err, doc) => {
+    oauth2Client = new google.auth.OAuth2(
+      doc.data["client-id"],
+      doc.data["client-secret"],
+      doc.data["redirection"]
+    );
+    setupOAuth(cdb);
+  });
+}
+
+function setupOAuth(cdb){
+  google.options({ auth: oauth2Client });
   cdb.findOne({type: "auth"}).exec((err, doc) => {
     if (!doc || doc.data.expiry_date < new Date()) {
       let url = oauth2Client.generateAuthUrl({
@@ -79,19 +87,12 @@ function setupOAuth(){
   });
 }
 
-oauth2Client.on('tokens', (tokens) => {
-  if (tokens.refresh_token) {
-    oauth2client.setCredentials({
-      refresh_token: tokens.refresh_token
-    });
-  }
-});
-
 module.exports = {
+  setProjectID,
   getCluster,
   createBuild,
   createTrigger,
   deleteTrigger,
   authenticate,
-  setupOAuth
+  setupClient
 }
