@@ -73,6 +73,7 @@ class Overview extends Component {
 
   render() {
     let exp = this.props.experiment;
+    let editClass = (exp.status.type === "past") ? "hidden":"";
     return (
       <div className="col-sm-7">
         <div className="progress progress-main">
@@ -81,7 +82,8 @@ class Overview extends Component {
         <div className="card">
           <h5 className="card-header text-center">
             Experiment Overview
-            <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.props.toggleEdit}>
+            <button href="" onClick={this.props.toggleEdit}
+             className={"btn badge badge-secondary main-tag pull-right "+editClass} >
               Edit
             </button>
           </h5>
@@ -113,10 +115,10 @@ class Overview extends Component {
                 </section>
                 <div className="col-sm-12">
                     <div className="monospace pull-right">
-                      {exp["settings"]["exp-branch"]}
+                      {exp["settings"]["exp-branch"] || "-"}
                     </div>
                     <div className="monospace">
-                      {exp["settings"]["main-branch"]}
+                      {exp["settings"]["main-branch"] || "-"}
                     </div>
                 </div>
                 <section className="row">

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { getServices } from '../../api/api';
 
 
 class Info extends Component {
@@ -10,9 +9,7 @@ class Info extends Component {
     "target":"",
     "duration":"",
     "durationunit":"",
-    "service":"",
-    "description":"",
-    "services":[]
+    "description":""
   };
 
   constructor(props) {
@@ -20,9 +17,7 @@ class Info extends Component {
     if (Object.keys(props.experiment).length === 0) {
       this.state = this.initialState;
     } else {
-      this.state = {...props.experiment.info,
-        "services" : []
-      }
+      this.state = props.experiment.info;
     }
   }
 
@@ -33,21 +28,8 @@ class Info extends Component {
       "target" : this.state.target,
       "duration" : this.state.duration,
       "durationunit" : this.state.durationunit,
-      "service" : this.state.service,
       "description" : this.state.description
     }
-  }
-
-  componentDidMount() {
-    getServices()
-      .then(res => {
-        this.setState({
-          services: res.items.map((service) =>
-            {return service.metadata.name})
-        });
-      })
-      .catch(err =>
-        console.log(err));
   }
 
   handleChange = (event) => {
@@ -57,19 +39,11 @@ class Info extends Component {
     });
   }
 
-  renderServices = () => {
-    return this.state.services
-      .map((service) => {
-      return (
-        <option key={service} value={service}>
-          {service}
-        </option>
-    )});
-  }
-
   renderDuration = () => {
     return Array.from(new Array(10),(val,i) =>
-      <option value={i+1}>{i+1}</option>
+      <option key={i+1} value={i+1}>
+        {i+1}
+      </option>
     );
   }
 
@@ -78,7 +52,7 @@ class Info extends Component {
       <div className="col-sm-6">
         <div className="card">
           <h5 className="card-header text-center">
-            General Info
+            Step 1: General Info
             <button href="" className="btn badge badge-secondary main-tag pull-right">
               ?
             </button>
@@ -129,13 +103,10 @@ class Info extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
-                    Service
+                    Target
                   </div>
                   <div className="col-sm-9">
-                    <select className="form-control" name="service" value={this.state["service"]} onChange={this.handleChange}>
-                      <option disabled></option>
-                      {this.renderServices()}
-                    </select>
+                    <input type="text" className="form-control" name="target" onChange={this.handleChange} value={this.state.target} placeholder="Concerned area"/>
                   </div>
                 </div>
               </li>

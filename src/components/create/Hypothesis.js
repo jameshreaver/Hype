@@ -31,10 +31,10 @@ class Hypothesis extends Component {
 
   render() {
     return (
-      <div className="col-sm-12">
+      <div className="col-sm-6">
         <div className="card">
           <h5 className="card-header text-center">
-            Hypothesis
+            Step 2: Hypothesis
             <button href="" className="btn badge badge-secondary main-tag pull-right">
               ?
             </button>
@@ -43,16 +43,30 @@ class Hypothesis extends Component {
             <ul className="list-group list-group-flush">
               <li className="list-group-item">
                 <div className="row">
-                  <div className="col-sm-4 card-subtext">
-                    We believe that...<br/><br/>
-                    <textarea className="form-control" name="change" rows="4" onChange={this.handleChange} value={this.state.change} placeholder="...this feature/capability"/>
+                  <div className="col-sm-3 card-subtext">
+                    We believe that...
                   </div>
-                  <div className="col-sm-4 card-subtext">
-                    will result in...<br/><br/>
-                    <textarea className="form-control" name="outcome" rows="4" onChange={this.handleChange} value={this.state.outcome} placeholder="...this outcome/result"/>
+                  <div className="col-sm-9">
+                    <textarea className="form-control" name="change" rows="3" onChange={this.handleChange} value={this.state.change} placeholder="...this feature/capability"/>
                   </div>
-                  <div className="col-sm-4 card-subtext">
-                    we will succeed if...<br/><br/>
+                </div>
+              </li>
+              <li className="list-group-item">
+                <div className="row">
+                  <div className="col-sm-3 card-subtext">
+                    will result in...
+                  </div>
+                  <div className="col-sm-9">
+                    <textarea className="form-control" name="outcome" rows="3" onChange={this.handleChange} value={this.state.outcome} placeholder="...this outcome/result"/>
+                  </div>
+                </div>
+              </li>
+              <li className="list-group-item">
+                <div className="row">
+                  <div className="col-sm-3 card-subtext">
+                    we will succeed if...
+                  </div>
+                  <div className="col-sm-9">
                     <textarea className="form-control" name="validation" rows="4"  onChange={this.handleChange} value={this.state.validation} placeholder="...these metrics are fulfilled."/>
                   </div>
                 </div>

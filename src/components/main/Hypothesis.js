@@ -4,12 +4,14 @@ class Hypothesis extends Component {
 
   render() {
     let exp = this.props.experiment;
+    let editClass = (exp.status.type === "past") ? "hidden":"";
     return (
       <div className="col-sm-5">
         <div className="card">
           <h5 className="card-header text-center">
             Hypothesis
-            <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.props.toggleEdit}>
+            <button href="" onClick={this.props.toggleEdit}
+             className={"btn badge badge-secondary main-tag pull-right "+editClass} >
               Edit
             </button>
           </h5>

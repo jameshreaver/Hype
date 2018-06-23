@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Instrum from './Instrum';
 
 
 class Info extends Component {
@@ -109,47 +110,48 @@ class Info extends Component {
   }
 
   render() {
-    return (
-      <div className="col-sm-12">
-        <div className="card">
-          <h5 className="card-header text-center">
-            Metrics
-            <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.addMetric}>
-              + Add
-            </button>
-          </h5>
-          <div className="card-block">
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item">
-                <div className="row">
-                  <div className="col-sm-2 card-subtext">
-                    Metric Type
+    return ([
+        <div key="metrics" className="col-sm-12">
+          <div className="card">
+            <h5 className="card-header text-center">
+              Step 3: Metrics
+              <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.addMetric}>
+                + Add
+              </button>
+            </h5>
+            <div className="card-block">
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item">
+                  <div className="row">
+                    <div className="col-sm-2 card-subtext">
+                      Metric Type
+                    </div>
+                    <div className="col-sm-2 card-subtext">
+                      on Element
+                    </div>
+                    <div className="col-sm-1   card-subtext">
+                      Key
+                    </div>
+                    <div className="col-sm-2 card-subtext">
+                      expected to
+                    </div>
+                    <div className="col-sm-2 card-subtext">
+                      by more than
+                    </div>
+                    <div className="col-sm-2 card-subtext">
+                      unit
+                    </div>
+                    <div className="col-sm-1 card-subtext">
+                    </div>
                   </div>
-                  <div className="col-sm-2 card-subtext">
-                    on Element
-                  </div>
-                  <div className="col-sm-1   card-subtext">
-                    Key
-                  </div>
-                  <div className="col-sm-2 card-subtext">
-                    expected to
-                  </div>
-                  <div className="col-sm-2 card-subtext">
-                    by more than
-                  </div>
-                  <div className="col-sm-2 card-subtext">
-                    unit
-                  </div>
-                  <div className="col-sm-1 card-subtext">
-                  </div>
-                </div>
-              </li>
-              {this.renderMetrics()}
-            </ul>
+                </li>
+                {this.renderMetrics()}
+              </ul>
+            </div>
           </div>
-        </div>
-      </div>
-    );
+        </div>,
+        <Instrum key="instrum" metrics={this.state.metrics}/>
+    ]);
   }
 }
 

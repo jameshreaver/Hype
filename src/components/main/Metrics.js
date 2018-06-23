@@ -74,12 +74,15 @@ class Metrics extends Component {
   renderMetric(m, data, i) {
     let unit = render.renderUnit(m["unit"]);
     let type = render.renderType(m["type"]);
+    let status = this.props.experiment.status.type;
+    let editClass = (status === "past") ? "absent":"";
     return (
       <div key={i}>
         <p>
           <i className={"fa metrics-icon " + ((data["status"]) ? "fa-check-circle success" : "fa-minus-circle")}/>
           <strong>{type}</strong> on element "<a className="monospace">{m["elem"]}</a>".
-          <button href="" className="btn badge badge-secondary main-tag pull-right" onClick={this.props.toggleEdit}>
+          <button href="" onClick={this.props.toggleEdit}
+           className={"btn badge badge-secondary main-tag pull-right "+editClass} >
             Edit
           </button>
         </p>

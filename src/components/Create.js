@@ -49,13 +49,9 @@ class Create extends Component {
         </h1>
         <section className="row">
           <Info experiment={exp} ref={(info) => {this.info = info}}/>
-          <Settings experiment={exp} ref={(settings) => {this.settings = settings}}/>
-        </section>
-        <section className="row">
           <Hypothesis experiment={exp} ref={(hypo) => {this.hypo = hypo}}/>
-        </section>
-        <section className="row">
           <Metrics experiment={exp} ref={(metrics) => {this.metrics = metrics}}/>
+          <Settings experiment={exp} ref={(settings) => {this.settings = settings}}/>
         </section>
       </main>
     );

@@ -404,10 +404,41 @@ main {
   margin-bottom: 0px;
 }
 
+
+/*
+ * Instrum
+ */
+
+.card-instrum {
+  height: 476px;
+}
+
+.card-block-instrum {
+  overflow-y: auto;
+}
+
+.method-instrum {
+  background-color: #e9ecef;
+  margin-left: 6px;
+}
+
+/*
+ * Settings
+ */
+
+.card-settings {
+  display: inline-block;
+}
+
+
 /*
  * Other
  */
 
 .hidden {
   visibility: hidden;
+}
+
+.absent {
+  display: none;
 }

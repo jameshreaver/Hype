@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { getBranches } from '../../api/api';
-
+import * as api from '../../api/api';
 
 class Settings extends Component {
 
   initialState = {
     "source":"",
-    "main-branch":"-",
-    "exp-branch":"-",
+    "main-branch":"",
+    "exp-branch":"",
     "percentage": 50,
-    "branches":[]
+    "service":"",
+    "branches":[],
+    "services":[]
   };
 
   constructor(props) {
@@ -18,7 +19,8 @@ class Settings extends Component {
       this.state = this.initialState;
     } else {
       this.state = {...props.experiment.settings,
-        "branches" : []
+        "branches" : [],
+        "services" : []
       }
     }
   }
@@ -28,12 +30,13 @@ class Settings extends Component {
       "source": this.state.source,
       "main-branch": this.state["main-branch"],
       "exp-branch": this.state["exp-branch"],
-      "percentage": this.state["percentage"]
+      "percentage": this.state["percentage"],
+      "service": this.state["service"]
     }
   }
 
   fetchBranches(source) {
-    getBranches(source)
+    api.getBranches(source)
       .then(res => {
         this.setState({
           branches: res
@@ -44,7 +47,18 @@ class Settings extends Component {
   }
 
   componentDidMount() {
-    this.fetchBranches(this.state.source);
+    if (this.state.source) {
+      this.fetchBranches(this.state.source);
+    }
+    api.getServices()
+      .then(res => {
+        this.setState({
+          services: res.items.map((service) =>
+            {return service.metadata.name})
+        });
+      }).catch(err =>
+        console.log(err)
+      );
   }
 
   handleChange = (event) => {
@@ -65,12 +79,24 @@ class Settings extends Component {
     )});
   }
 
+  renderServices = () => {
+    return this.state.services
+      .map((service) => {
+      return (
+        <option key={service} value={service}>
+          {service}
+        </option>
+    )});
+  }
+
   render() {
+    let status = this.props.experiment.status;
+    let disabled = status && status.type !== "planned";
     return (
-      <div className="col-sm-6">
+      <div className="col-sm-6 card-settings">
         <div className="card">
           <h5 className="card-header text-center">
-            Settings
+            Step 5: Settings
             <button href="" className="btn badge badge-secondary main-tag pull-right">
               ?
             </button>
@@ -80,13 +106,26 @@ class Settings extends Component {
               <li className="list-group-item">
                 <div className="row">
                   <div className="col-sm-3 card-subtext">
+                    Service
+                  </div>
+                  <div className="col-sm-9">
+                    <select className="form-control" name="service" value={this.state["service"]} onChange={this.handleChange} disabled={disabled}>
+                      <option disabled></option>
+                      {this.renderServices()}
+                    </select>
+                  </div>
+                </div>
+              </li>
+              <li className="list-group-item">
+                <div className="row">
+                  <div className="col-sm-3 card-subtext">
                     Repository
                   </div>
                   <div className="col-sm-9 input-group mb-2">
                     <div className="input-group-prepend">
                       <div className="input-group-text">github.com/</div>
                     </div>
-                    <input type="url" className="form-control" name="source" placeholder="username/repo-name" value={this.state.source} onChange={(e) => {this.handleChange(e); this.fetchBranches(e.target.value);}}/>
+                    <input type="url" className="form-control" name="source" placeholder="username/repo-name" value={this.state.source} disabled={disabled} onChange={(e) => {this.handleChange(e); this.fetchBranches(e.target.value);}}/>
                   </div>
                 </div>
               </li>
@@ -96,7 +135,7 @@ class Settings extends Component {
                     Main Branch
                   </div>
                   <div className="col-sm-9">
-                    <select className="form-control" name="main-branch" value={this.state["main-branch"]} onChange={this.handleChange}>
+                    <select className={"form-control "} name="main-branch" value={this.state["main-branch"]} onChange={this.handleChange} disabled={disabled}>
                       <option disabled></option>
                       {this.renderBranches()}
                     </select>
@@ -109,7 +148,7 @@ class Settings extends Component {
                     Experiment
                   </div>
                   <div className="col-sm-9">
-                    <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange}>
+                    <select className="form-control" name="exp-branch" value={this.state["exp-branch"]} onChange={this.handleChange} disabled={disabled}>
                       <option disabled></option>
                       {this.renderBranches()}
                     </select>
@@ -118,7 +157,7 @@ class Settings extends Component {
               </li>
               <li className="list-group-item">
                 <section className="">
-                  <input type="range" className="form-control-range routing-bar" name="percentage" value={this.state.percentage} onChange={this.handleChange} min="0" max="100" step="10"/>
+                  <input type="range" className="form-control-range routing-bar" name="percentage" value={this.state.percentage} disabled={disabled} onChange={this.handleChange} min="0" max="100" step="10"/>
                 </section>
                 <section className="row">
                   <div className="col-sm-3 version-left">
@@ -145,10 +184,10 @@ class Settings extends Component {
                 </section>
                 <div className="col-sm-12">
                     <div className="monospace pull-right">
-                      {this.state["exp-branch"]}
+                      {this.state["exp-branch"] || "-"}
                     </div>
                     <div className="monospace">
-                      {this.state["main-branch"]}
+                      {this.state["main-branch"] || "-"}
                     </div>
                 </div>
                 <section className="row">

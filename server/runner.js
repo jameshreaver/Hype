@@ -144,7 +144,7 @@ function deleteTriggers(exp) {
 function getInfo(exp) {
   return  {
     "id": exp["id"],
-    "service": exp["info"]["service"],
+    "service": exp["settings"]["service"],
     "main-branch": exp["settings"]["main-branch"],
     "exp-branch": exp["settings"]["exp-branch"],
     "replicas": exp["settings"]["percentage"]/10
